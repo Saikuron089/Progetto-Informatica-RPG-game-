@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Carone4 {
+public class Compito_4_Carone {
     public static void main(String[] args) {
         int moneteOroAttuali = leggiMoneteOro();
 

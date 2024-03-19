@@ -17,7 +17,7 @@ import java.util.Vector;
 * Nel file "personaggi_ottenuti.txt" i personaggi vengono scritti nel formato "nome rarità stelle"
 */
 
-public class RandomPlayer {
+public class Miglioramento_compito_1_Rodella {
 
     FileReader f;
     BufferedReader fIN;

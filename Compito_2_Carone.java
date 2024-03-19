@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class ProgInfo2{
+public class Compito_2_Carone{
     
     public static void statistiche(){
         

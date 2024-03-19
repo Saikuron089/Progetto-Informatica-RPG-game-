@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Carone3 {
+public class Compito_3_Carone {
     private static final String[][] opzioniMenu = {
         {"1) Gioca"},
         {"2) Negozio"},

@@ -14,7 +14,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Vector;
 
-public class Mission {
+public class Compito_2_Rodella {
 
    public Mission(){}
 

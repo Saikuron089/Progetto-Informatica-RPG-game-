@@ -12,7 +12,7 @@ import java.util.Vector;
 * purchè occupino una riga ciascuno.
 */
 
-public class RandomPlayer {
+public class Compito_1_Rodella {
 
     FileReader f;
     BufferedReader fIN;

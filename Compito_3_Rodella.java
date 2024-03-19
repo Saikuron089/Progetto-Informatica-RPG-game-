@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Vector;
 
-public class returnPersonaggi {
+public class Compito_3_Rodella {
 
     public Vector<String> retPersonaggi(){
         

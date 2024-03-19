@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class Miglioramento1 {
+public class Miglioramento_Compito_1_Carone {
     public static void aggiungiStella(String lista_pers[][], int cont) {
 
         for(int i=0; i<30; i++){

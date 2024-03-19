@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.StringTokenizer;
 
-public class checkTenStar {
+public class Compito_4_Rodella {
     public static boolean isTenStars(String nome){
 
         try{

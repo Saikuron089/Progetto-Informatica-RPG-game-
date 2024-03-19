@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.*;
 
-public class progInfo {
+public class Compito_1_Carone {
     public static void aggiungiStella(String s, int cont) {
         for (int i = 0; i < 10; i++) {
             if (s.charAt(i) != '*' && cont != 10) { // per contare quante stelle ci sono già

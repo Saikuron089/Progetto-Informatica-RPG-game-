@@ -11,6 +11,7 @@ import inputs.keyboardInput;
 // player
 
 import utility.playerLoad;
+import utility.collision;
 import utility.draw;
 
 public class Map extends JPanel implements Runnable {
@@ -23,13 +24,12 @@ public class Map extends JPanel implements Runnable {
     // setup the map
 
     draw d = new draw();
+    collision c = new collision();
 
     // player info
 
     playerLoad p = new playerLoad();;
-    int x = 100;
-    int y = 100;
-    final int SPEED = 3;
+    final int SPEED = 4;
 
     // screen settings
 
@@ -48,7 +48,7 @@ public class Map extends JPanel implements Runnable {
         f.addKeyListener(k);
         f.setSize(WIDTH + 16, HEIGHT + 38);
         f.setVisible(true);
-        f.setResizable(false);
+        //f.setResizable(false);
 
         // setup the image
 
@@ -112,30 +112,25 @@ public class Map extends JPanel implements Runnable {
         // controlla che non esca dai bordi
 
         if(k.w){
-            if(y > 0 - 8)
-                y-= SPEED;
+            camY+= SPEED;
             // set the up image
             img = p.up;
         }else if(k.a){
-            if(x > 0 - 12)
-                x-= SPEED;
+            camX+= SPEED;
             // set the left image
             img = p.left;
         }else if(k.s){
-            if(y < HEIGHT - 92)
-                y+= SPEED;
+            camY-= SPEED;
             // set the down image
             img = p.down;
         }else if(k.d){
-            if(x < WIDTH - 64)
-                x+= SPEED;
+            camX-= SPEED;
             // set the right image
             img = p.right;
         }else{
             // set the standard image
             img = p.std;
         }
-
 
     }
 
@@ -148,11 +143,11 @@ public class Map extends JPanel implements Runnable {
 
         // draw the map
 
-        d.drawTile(g2, WIDTH, HEIGHT, camX, camY);
+        d.drawTile(g2, camX, camY, WIDTH/2 - 55 - camX, HEIGHT/2 - 55 - camY + 64);
 
         // draw the player
 
-        d.drawPlayer(g2, img, 500, 500);
+        d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
 
         g2.dispose();
 

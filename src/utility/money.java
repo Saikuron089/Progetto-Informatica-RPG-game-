@@ -17,6 +17,7 @@ public class money {
             BufferedReader fIN = new BufferedReader(f);
 
             String line = fIN.readLine();
+            System.out.println(line);
 
             money = Integer.parseInt(line);
 
@@ -50,7 +51,7 @@ public class money {
 
             FileWriter f = new FileWriter("oro.txt");
             PrintWriter fOUT = new PrintWriter(f);
-            f.write(Integer.toString(this.money));
+            fOUT.write(Integer.toString(this.money));
             f.close();
         }catch(Exception e){
             System.out.println("Errore: " + e);

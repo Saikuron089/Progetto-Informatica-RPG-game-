@@ -1,0 +1,20 @@
+1-Forza Potenziata-0-20-0
+2-Agilità Rafforzata-0-0-20
+3-Difesa Fortificata-20-0-0
+4-Salute Rinforzata-0-0-20
+5-Furia Inarrestabile-20-20-0
+6-Riflessi Migliorati-0-20-0
+7-Cuore di Ferro-20-0-20
+8-Resistenza Potenziata-0-20-20
+9-Lame Affilate-20-20-0
+10-Sintonia Vitale-0-20-20
+11-Armatura Rinforzata-20-0-20
+12-Pugni di Acciaio-20-0-0
+13-Evocazione Potenziata-0-0-20
+14-Fulmine Implacabile-20-20-0
+15-Potenza Magica-0-20-0
+16-Spada Infuocata-20-0-0
+17-Scudo Indistruttibile-20-0-20
+18-Furtività Potenziata-0-20-0
+19-Rigenerazione Accelerata-0-0-20
+20-Mente Invincibile-0-0-20

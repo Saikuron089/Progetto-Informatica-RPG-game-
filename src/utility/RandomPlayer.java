@@ -6,17 +6,6 @@ import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-/*
-* FILE A CUI FA RIFERIMENTO QUESTA CLASSE: "personaggi_evocabili.txt" e "personaggi_ottenuti.txt"
-* Questa classe serve per scegliere un personaggio random da dare all'utente
-* quando vuole acquistare un nuovo personaggio dallo shop e salvarlo.
-* La classe non richiede un numero statico di personaggi nel file di conseguenza
-* si possono aggiungere nel file "personaggi_evocabili.txt" quanti personaggi si vogliono
-* purchè occupino una riga ciascuno.
-* I personaggi nel file "personaggi_evocabili.txt" devono essere scritti nel formato "index-nome-rarità-stelle".
-* Nel file "personaggi_ottenuti.txt" i personaggi vengono scritti nel formato "nome rarità stelle"
-*/
-
 // da controllare se sono stati presi i personaggi (sennò c'è il loop)
 
 public class RandomPlayer {
@@ -30,7 +19,7 @@ public class RandomPlayer {
 
         try{
 
-            FileReader f = new FileReader("personaggi_ottenuti.txt");
+            FileReader f = new FileReader("potenziamenti_ottenuti.txt");
             BufferedReader fIN = new BufferedReader(f);
 
             String line = fIN.readLine();
@@ -60,10 +49,10 @@ public class RandomPlayer {
 
     public String getRandomPlayer(){
 
-        // apre il file "personaggi_evocabili.txt"
+        // apre il file "potenziamenti_evocabili.txt"
 
         try{
-            f = new FileReader("personaggi_evocabili.txt");
+            f = new FileReader("potenziamenti_evocabili.txt");
             fIN = new BufferedReader(f);
         }catch (Exception e) {
             System.out.println("Error: " + e);
@@ -122,35 +111,33 @@ public class RandomPlayer {
         // che non abbia già 10 stelle
 
 
-        // salva il personaggio sul file personaggi_ottenuti.txt
+        // salva il potenziamento sul file potenziamenti_ottenuti.txt
 
         try{
 
             // apro il file per la scrittura
 
-            FileWriter f1 = new FileWriter("personaggi_ottenuti.txt", true);
+            FileWriter f1 = new FileWriter("potenziamenti_ottenuti.txt", true);
             PrintWriter fOUT = new PrintWriter(f1);
 
             // prendo dalla riga il nome, rarità e numero di stelle
 
             String player = v.elementAt(scelta);
             StringTokenizer st = new StringTokenizer(player, "-");
-            String nome, rarita, stelle;
+            String nome;
             
             System.out.println(player);
 
             st.nextToken();
             nome = st.nextToken();
-            rarita = st.nextToken();
-            stelle = st.nextToken();
 
-            fOUT.println(nome + " " + rarita + " " + stelle);
+            fOUT.println(nome);
 
             // chiudo il file
             f1.close();
             
-            // ritorna la riga del personaggio in base al numero random
-            return "E' stato trovato il personaggio: " + nome + " " + rarita + " " + stelle;
+            // ritorna la riga del potenziamento in base al numero random
+            return "E' stato trovato il potenziamento: " + nome;
 
         }catch (Exception e){
             System.out.println("Errore2: " + e);

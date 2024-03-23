@@ -11,7 +11,7 @@ public class collision {
 
         //System.out.println("ActualX: " + actualX + " ActualY: " + actualY + " ObjX: " + objX + " ObjY: " + objY);
 
-        if(actualX + (isRIGHT ? 2 : isLEFT ? -4 : 0) > objX && actualX + (isRIGHT ? 2 : isLEFT ? -4 : 0) < objX + 64 && actualY + (isDOWN ? 4 : isUP ? -4 : 0) > objY && actualY + (isDOWN ? 4 : isUP ? -4 : 0) < objY + 64){
+        if(actualX + (isRIGHT ? 8 : isLEFT ? -8 : 0) > objX && actualX + (isRIGHT ? 8 : isLEFT ? -8 : 0) < objX + 64 && actualY + (isDOWN ? 12 : isUP ? -12 : 0) > objY && actualY + (isDOWN ? 12 : isUP ? -12 : 0) < objY + 64){
             collision = true;
         }
         

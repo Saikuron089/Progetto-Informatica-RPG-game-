@@ -36,15 +36,14 @@ public class Map extends JPanel implements Runnable {
     playerLoad p = new playerLoad();;
     int SPEED = 4;
     boolean isColliding = false;
-    boolean isAdjustingPosition = false;
     boolean isUP = false;
     boolean isDOWN = false;
     boolean isLEFT = false;
     boolean isRIGHT = false;
-    boolean isUPLocked = false;
-    boolean isDOWNLocked = false;
-    boolean isLEFTLocked = false;
-    boolean isRIGHTLocked = false;
+    boolean isDialog = false;
+    boolean isDialogBlocked = false;
+    int dialogIndex = 0;
+
 
     // camera settings
 
@@ -53,6 +52,7 @@ public class Map extends JPanel implements Runnable {
 
     public Map() {
 
+        f.setIconImage(p.std);
         f.add(this);
         f.addKeyListener(k);
         f.setSize(WIDTH + 16, HEIGHT + 38);
@@ -88,6 +88,10 @@ public class Map extends JPanel implements Runnable {
 
         while (gameThread != null) {
 
+            // check if dialog is open
+
+            dialog();
+
             // update 
 
             repaint();
@@ -118,13 +122,41 @@ public class Map extends JPanel implements Runnable {
 
     }
 
+    public void dialog(){
+
+        // dialog
+
+        if(camX < -700 && camX > -800 && camY < -180 && camY > -280 && dialogIndex == 0 && !isDialogBlocked){
+            isDialog = true;
+            dialogIndex = 1;
+        }else if(dialogIndex == 1 && k.enter){
+            dialogIndex++;
+            k.enter = false;
+        }else if(dialogIndex == 2 && k.enter){
+            dialogIndex++;
+            k.enter = false;
+        }else if(dialogIndex == 3){
+            dialogIndex = 0;
+            isDialog = false;
+            isDialogBlocked = true;
+        }
+    }
+
     public void update(){
 
         //System.out.println("CamX: " + camX + " CamY: " + camY);
 
+        if(isDialog && dialogIndex == 1){
+            SPEED = 0;
+            System.out.println("Dialog 1");
+        }else if(isDialog && dialogIndex == 2){
+            SPEED = 0;
+            System.out.println("Dialog 2");
+        }
+
         // controlla che non esca dai bordi
 
-        if(k.w && !isUPLocked){
+        if(k.w){
             camY+= SPEED;
             // set the up image
             img = p.up;
@@ -132,7 +164,7 @@ public class Map extends JPanel implements Runnable {
             isDOWN = false;
             isLEFT = false;
             isRIGHT = false;
-        }else if(k.a && !isLEFTLocked){
+        }else if(k.a){
             camX+= SPEED;
             // set the left image
             img = p.left;
@@ -140,7 +172,7 @@ public class Map extends JPanel implements Runnable {
             isUP = false;
             isDOWN = false;
             isRIGHT = false;
-        }else if(k.s && !isDOWNLocked){
+        }else if(k.s){
             camY-= SPEED;
             // set the down image
             img = p.down;
@@ -148,7 +180,7 @@ public class Map extends JPanel implements Runnable {
             isUP = false;
             isLEFT = false;
             isRIGHT = false;
-        }else if(k.d && !isRIGHTLocked){
+        }else if(k.d){
             camX-= SPEED;
             // set the right image
             img = p.right;
@@ -166,36 +198,9 @@ public class Map extends JPanel implements Runnable {
     public void isPlayerColliding(){
 
         if(isColliding){    
-            if(isUP){
-                camY-= SPEED + 1;
-                isUPLocked = true;
-                isDOWNLocked = false;
-                isLEFTLocked = false;
-                isRIGHTLocked = false;
-            }else if(isDOWN){
-                camY+= SPEED + 1;
-                isDOWNLocked = true;
-                isUPLocked = false;
-                isLEFTLocked = false;
-                isRIGHTLocked = false;
-            }else if(isLEFT){
-                camX-= SPEED + 1;
-                isLEFTLocked = true;
-                isUPLocked = false;
-                isDOWNLocked = false;
-                isRIGHTLocked = false;
-            }else if(isRIGHT){
-                camX+= SPEED + 1;
-                isRIGHTLocked = true;
-                isUPLocked = false;
-                isDOWNLocked = false;
-                isLEFTLocked = false;
-            }
+            SPEED = 0;
         }else{
-            isUPLocked = false;
-            isDOWNLocked = false;
-            isLEFTLocked = false;
-            isRIGHTLocked = false;
+            SPEED = 4;
         }
 
     }
@@ -214,6 +219,10 @@ public class Map extends JPanel implements Runnable {
         // draw the player
 
         d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
+
+        // draw the bots
+
+        d.drawBot(g2, img, 1224 + camX, 572 + camY);
 
         g2.dispose();
 

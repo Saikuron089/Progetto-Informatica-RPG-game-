@@ -9,6 +9,7 @@ public class keyboardInput implements KeyListener {
     public boolean a = false;
     public boolean s = false;
     public boolean d = false;
+    public boolean enter = false;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -25,6 +26,8 @@ public class keyboardInput implements KeyListener {
             this.s = true;
         }else if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT){
             this.d = true;
+        }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
+            this.enter = true;
         }
     }
 
@@ -38,6 +41,8 @@ public class keyboardInput implements KeyListener {
             this.s = false;
         }else if(e.getKeyCode() == KeyEvent.VK_D || e.getKeyCode() == KeyEvent.VK_RIGHT){
             this.d = false;
+        }else if(e.getKeyCode() == KeyEvent.VK_ENTER){
+            this.enter = false;
         }
     }
 }

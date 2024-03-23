@@ -96,4 +96,10 @@ public class draw {
 
     }
 
+    public void drawBot(Graphics2D g2, BufferedImage img, int x, int y){
+
+        g2.drawImage(p.std, x, y, 88, 88, null);
+
+    }
+
 }

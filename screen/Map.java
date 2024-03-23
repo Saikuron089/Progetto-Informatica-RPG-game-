@@ -11,7 +11,6 @@ import inputs.keyboardInput;
 // player
 
 import utility.playerLoad;
-import utility.collision;
 import utility.draw;
 
 public class Map extends JPanel implements Runnable {
@@ -20,16 +19,9 @@ public class Map extends JPanel implements Runnable {
     Thread gameThread;
     final int FPS = 60;
     JFrame f = new JFrame("Gioco");
-
     // setup the map
 
     draw d = new draw();
-    collision c = new collision();
-
-    // player info
-
-    playerLoad p = new playerLoad();;
-    final int SPEED = 4;
 
     // screen settings
 
@@ -37,10 +29,27 @@ public class Map extends JPanel implements Runnable {
     final int WIDTH = 1024;
     final int HEIGHT = 768;
 
+    // player info
+
+    final int HITBOX_X =  WIDTH/2 - 17; 
+    final int HITBOX_Y = HEIGHT/2 + 10;
+    playerLoad p = new playerLoad();;
+    int SPEED = 4;
+    boolean isColliding = false;
+    boolean isAdjustingPosition = false;
+    boolean isUP = false;
+    boolean isDOWN = false;
+    boolean isLEFT = false;
+    boolean isRIGHT = false;
+    boolean isUPLocked = false;
+    boolean isDOWNLocked = false;
+    boolean isLEFTLocked = false;
+    boolean isRIGHTLocked = false;
+
     // camera settings
 
-    int camX = 0;
-    int camY = 0;
+    int camX = -360;
+    int camY = -168;
 
     public Map() {
 
@@ -48,7 +57,7 @@ public class Map extends JPanel implements Runnable {
         f.addKeyListener(k);
         f.setSize(WIDTH + 16, HEIGHT + 38);
         f.setVisible(true);
-        //f.setResizable(false);
+        f.setResizable(false);
 
         // setup the image
 
@@ -78,10 +87,12 @@ public class Map extends JPanel implements Runnable {
         double nextDrawTime = System.nanoTime() + drawInterval;
 
         while (gameThread != null) {
-            
-            update();
+
+            // update 
 
             repaint();
+
+            update();
             
             try{
 
@@ -109,27 +120,82 @@ public class Map extends JPanel implements Runnable {
 
     public void update(){
 
+        //System.out.println("CamX: " + camX + " CamY: " + camY);
+
         // controlla che non esca dai bordi
 
-        if(k.w){
+        if(k.w && !isUPLocked){
             camY+= SPEED;
             // set the up image
             img = p.up;
-        }else if(k.a){
+            isUP = true;
+            isDOWN = false;
+            isLEFT = false;
+            isRIGHT = false;
+        }else if(k.a && !isLEFTLocked){
             camX+= SPEED;
             // set the left image
             img = p.left;
-        }else if(k.s){
+            isLEFT = true;
+            isUP = false;
+            isDOWN = false;
+            isRIGHT = false;
+        }else if(k.s && !isDOWNLocked){
             camY-= SPEED;
             // set the down image
             img = p.down;
-        }else if(k.d){
+            isDOWN = true;
+            isUP = false;
+            isLEFT = false;
+            isRIGHT = false;
+        }else if(k.d && !isRIGHTLocked){
             camX-= SPEED;
             // set the right image
             img = p.right;
+            isRIGHT = true;
+            isUP = false;
+            isDOWN = false;
+            isLEFT = false;
         }else{
             // set the standard image
             img = p.std;
+        }
+
+    }
+
+    public void isPlayerColliding(){
+
+        if(isColliding){    
+            if(isUP){
+                camY-= SPEED + 1;
+                isUPLocked = true;
+                isDOWNLocked = false;
+                isLEFTLocked = false;
+                isRIGHTLocked = false;
+            }else if(isDOWN){
+                camY+= SPEED + 1;
+                isDOWNLocked = true;
+                isUPLocked = false;
+                isLEFTLocked = false;
+                isRIGHTLocked = false;
+            }else if(isLEFT){
+                camX-= SPEED + 1;
+                isLEFTLocked = true;
+                isUPLocked = false;
+                isDOWNLocked = false;
+                isRIGHTLocked = false;
+            }else if(isRIGHT){
+                camX+= SPEED + 1;
+                isRIGHTLocked = true;
+                isUPLocked = false;
+                isDOWNLocked = false;
+                isLEFTLocked = false;
+            }
+        }else{
+            isUPLocked = false;
+            isDOWNLocked = false;
+            isLEFTLocked = false;
+            isRIGHTLocked = false;
         }
 
     }
@@ -143,13 +209,20 @@ public class Map extends JPanel implements Runnable {
 
         // draw the map
 
-        d.drawTile(g2, camX, camY, WIDTH/2 - 55 - camX, HEIGHT/2 - 55 - camY + 64);
+        d.drawTile(g2, camX, camY, HITBOX_X, HITBOX_Y, isUP, isDOWN, isLEFT, isRIGHT);
 
         // draw the player
 
         d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
 
         g2.dispose();
+
+        // manage colliding
+
+        isColliding = d.c.collision;
+        isPlayerColliding();
+
+        d.c.collision = false;
 
     }
 

@@ -7,18 +7,14 @@ public class collision {
 
     public collision(){}
 
-    public void checkCollision(int camX, int camY, int actualX, int actualY, int objX, int objY){
+    public void checkCollision(int camX, int camY, int actualX, int actualY, int objX, int objY, boolean isUP, boolean isDOWN, boolean isLEFT, boolean isRIGHT){
 
-        int iX = -(camX - objX);    // posizione statica
-        int iY = -(camY - objY);    // posizione statica
+        //System.out.println("ActualX: " + actualX + " ActualY: " + actualY + " ObjX: " + objX + " ObjY: " + objY);
 
-        //System.out.println("camX: " + actualX + " camY: " + actualY + " objX: " + objX + " objY: " + objY + " iX: " + iX + " iY: " + iY);
-
-        if(actualX > iX && actualX < iX + 32 && actualY > iY && actualY < iY + 64){
-            System.out.println("Collision detected: " + x);
-            x++;
+        if(actualX + (isRIGHT ? 2 : isLEFT ? -4 : 0) > objX && actualX + (isRIGHT ? 2 : isLEFT ? -4 : 0) < objX + 64 && actualY + (isDOWN ? 4 : isUP ? -4 : 0) > objY && actualY + (isDOWN ? 4 : isUP ? -4 : 0) < objY + 64){
+            collision = true;
         }
-
+        
     }  
 
 }

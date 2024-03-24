@@ -34,7 +34,7 @@ public class Negozio extends JFrame {
       err.setVisible(false);
       this.add(err);
 
-      Button l1 = new Button("Evoca personaggio (20 monete)");
+      Button l1 = new Button("Evoca potenziamento (20 monete)");
       l1.setBounds(140, 100, 200, 30);
       l1.addActionListener(new ActionListener() {
          @Override

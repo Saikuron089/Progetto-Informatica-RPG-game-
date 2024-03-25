@@ -1,6 +1,13 @@
 package utility;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.StringTokenizer;
+
 import javax.imageio.ImageIO;
 
 public class playerLoad {
@@ -10,6 +17,13 @@ public class playerLoad {
     public BufferedImage down;
     public BufferedImage left;
     public BufferedImage right;
+
+    // user data
+
+    public int exp;
+    public String nome;
+    public boolean firstKey = false;
+    public boolean secondKey = false;
 
     public playerLoad(){
 
@@ -21,10 +35,49 @@ public class playerLoad {
             left = ImageIO.read(getClass().getResourceAsStream("/assets/player/playerLeft.png"));
             right = ImageIO.read(getClass().getResourceAsStream("/assets/player/playerRight.png"));
 
+            // get user info
+
+            try{
+
+                FileReader f = new FileReader("user.txt");
+                BufferedReader fIN = new BufferedReader(f);
+
+                String userData = fIN.readLine();
+
+                StringTokenizer st = new StringTokenizer(userData , "-");
+
+                nome = st.nextToken();
+                exp = Integer.parseInt(st.nextToken());
+                firstKey = Boolean.parseBoolean(st.nextToken());
+                secondKey = Boolean.parseBoolean(st.nextToken());
+
+                f.close();
+
+            }catch(Exception e){
+                System.out.println("Errore: " + e);
+            }
+
         }catch(Exception e){
             System.out.println("Errore: " + e);
         }
 
+
+    }
+
+    public void getFirstKey(){
+        
+        try{
+
+            FileWriter f = new FileWriter("user.txt");
+            PrintWriter fOUT = new PrintWriter(f);
+            
+            fOUT.write(nome + "-" + exp + "-" + true + "-" + secondKey);
+
+            f.close();
+
+        }catch(Exception e){
+            System.out.println("Errore: " + e);
+        }
 
     }
 

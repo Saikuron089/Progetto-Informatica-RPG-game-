@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 
 public class draw {
     
-    playerLoad p = new playerLoad();
+    public playerLoad p = new playerLoad();
     object o = new object();
     public collision c = new collision();
 
@@ -17,7 +17,13 @@ public class draw {
         g2.setColor(Color.WHITE);
         g2.fillOval(x + 5, y - 10, 80, 20);
         g2.setColor(Color.BLACK);
-        g2.drawString("Exp: 1", x + 18, y + 5);
+        g2.drawString("Exp: " + p.exp, x + 18, y + 5);
+
+        if(p.firstKey)
+            g2.drawImage(o.key, x + 90, y - 10, 20, 20, null);
+
+        if(p.secondKey)
+            g2.drawImage(o.key, x + 110, y - 10, 20, 20, null);
 
         g2.drawImage(img, x, y, 92, 92, null);
 
@@ -61,8 +67,17 @@ public class draw {
             {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
         };
 
+
         int numRows = map.length;
         int numCols = map[0].length;
+
+        if(p.exp >= 500){
+            map[17][27] = 0;
+        }
+        if(p.firstKey){
+            map[17][28] = 8;
+        }
+
 
         for(int i = 0; i < (numCols * 64); i+=64){
             for(int j = 0; j < (numRows * 64); j+=64){
@@ -72,23 +87,18 @@ public class draw {
                 else if(map[b][a] == 1){
                     g2.drawImage(o.acqua, i + camX, j + camY, 64, 64, null);
                     c.checkCollision(camX, camY, actualX, actualY, i + camX, j + camY, isUP, isDOWN, isLEFT, isRIGHT);
-                }
-                else if(map[b][a] == 2){
+                }else if(map[b][a] == 2){
                     g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
                     g2.drawImage(o.montagna, i + camX, j + camY, 64, 64, null);
                     c.checkCollision(camX, camY, actualX, actualY, i + camX, j + camY, isUP, isDOWN, isLEFT, isRIGHT);
-                }
-                else if(map[b][a] == 3){
+                }else if(map[b][a] == 3){
                     g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
                     g2.drawImage(o.strada, i + camX, j + camY, 64, 64, null);
-                }
-                    
-                else if(map[b][a] == 4){
+                }else if(map[b][a] == 4){
                     g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
                     g2.drawImage(o.albero, i + camX, j + camY, 64, 64, null);
                     c.checkCollision(camX, camY, actualX, actualY, i + camX, j + camY, isUP, isDOWN, isLEFT, isRIGHT);
-                }
-                else if(map[b][a] == 5){
+                }else if(map[b][a] == 5){
                     g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
                     g2.drawImage(o.grano, i + camX, j + camY, 64, 64, null);
                 }else if(map[b][a] == 6){
@@ -99,6 +109,9 @@ public class draw {
                     g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
                     g2.drawImage(o.wall, i + camX + 18, j + camY, 32, 64, null);
                     c.checkCollision(camX, camY, actualX, actualY, i + camX, j + camY, isUP, isDOWN, isLEFT, isRIGHT);
+                }else if(map[b][a] == 8){
+                    g2.drawImage(o.erba, i + camX, j + camY, 64, 64, null);
+                    g2.drawImage(o.chest_opened, i + camX, j + camY, 64, 64, null);
                 }
 
                 if(b < numRows)

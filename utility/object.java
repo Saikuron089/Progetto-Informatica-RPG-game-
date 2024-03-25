@@ -15,6 +15,7 @@ public class object {
     public BufferedImage chest_closed;
     public BufferedImage chest_opened;
     public BufferedImage wall;
+    public BufferedImage key;
 
     public object(){
         
@@ -29,7 +30,8 @@ public class object {
             chest_closed = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/chest_closed.png"));
             chest_opened = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/chest_open.png"));
             wall = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/wall.png"));
-
+            key = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/key.png"));
+            
         }catch(Exception e){
             System.out.println("Errore: " + e);
         }

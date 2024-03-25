@@ -2,6 +2,7 @@ package screen;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 import javax.swing.JFrame;
@@ -10,9 +11,9 @@ import javax.swing.JPanel;
 // input
 
 import inputs.keyboardInput;
-// player
 
-import utility.playerLoad;
+// draw
+
 import utility.draw;
 
 public class Map extends JPanel implements Runnable {
@@ -21,6 +22,8 @@ public class Map extends JPanel implements Runnable {
     Thread gameThread;
     final int FPS = 60;
     JFrame f = new JFrame("Gioco");
+    Random r = new Random();
+
     // setup the map
 
     draw d = new draw();
@@ -30,12 +33,12 @@ public class Map extends JPanel implements Runnable {
     keyboardInput k = new keyboardInput();
     final int WIDTH = 1024;
     final int HEIGHT = 768;
+    boolean isFight = true;
 
     // player info
 
     final int HITBOX_X =  WIDTH/2 - 17; 
     final int HITBOX_Y = HEIGHT/2 + 10;
-    playerLoad p = new playerLoad();;
     int SPEED = 4;
     boolean isColliding = false;
     boolean isUP = false;
@@ -64,7 +67,7 @@ public class Map extends JPanel implements Runnable {
 
     public Map() {
 
-        f.setIconImage(p.std);
+        f.setIconImage(d.p.std);
         f.add(this);
         f.addKeyListener(k);
         f.setSize(WIDTH + 16, HEIGHT + 38);
@@ -73,7 +76,7 @@ public class Map extends JPanel implements Runnable {
 
         // setup the image
 
-        img = p.std;
+        img = d.p.std;
         
         // start the game thread
 
@@ -100,15 +103,26 @@ public class Map extends JPanel implements Runnable {
 
         while (gameThread != null) {
 
-            // check if dialog is open
+            // normal condition
 
-            dialog();
+            if(!isFight){
+                
+                // check if dialog is open
 
-            // update 
+                dialog();
 
-            repaint();
+                // take eventually the keys
 
-            update();
+                keys();
+
+                // update 
+
+                repaint();
+
+                update();
+            }
+
+            
             
             try{
 
@@ -134,6 +148,15 @@ public class Map extends JPanel implements Runnable {
 
     }
 
+    public void keys(){
+
+        if(camX < -1250 && camX > -1320 && camY < -640 && camY > -850 && d.p.exp >= 500 && !d.p.firstKey){
+            d.p.firstKey = true;
+            d.p.getFirstKey();
+        }
+
+    }
+
     public void dialog(){
 
         // dialog
@@ -153,7 +176,7 @@ public class Map extends JPanel implements Runnable {
             isDialogBlocked = true;
         }
 
-        if(camX < -1200 && camX > -1300 && camY < -640 && camY > -850){
+        if(camX < -1200 && camX > -1300 && camY < -640 && camY > -850 && d.p.exp < 500){
             isKeyDialog = true;
         }
 
@@ -184,7 +207,7 @@ public class Map extends JPanel implements Runnable {
         if(k.w){
             camY+= SPEED;
             // set the up image
-            img = p.up;
+            img = d.p.up;
             isUP = true;
             isDOWN = false;
             isLEFT = false;
@@ -192,7 +215,7 @@ public class Map extends JPanel implements Runnable {
         }else if(k.a){
             camX+= SPEED;
             // set the left image
-            img = p.left;
+            img = d.p.left;
             isLEFT = true;
             isUP = false;
             isDOWN = false;
@@ -200,7 +223,7 @@ public class Map extends JPanel implements Runnable {
         }else if(k.s){
             camY-= SPEED;
             // set the down image
-            img = p.down;
+            img = d.p.down;
             isDOWN = true;
             isUP = false;
             isLEFT = false;
@@ -208,14 +231,23 @@ public class Map extends JPanel implements Runnable {
         }else if(k.d){
             camX-= SPEED;
             // set the right image
-            img = p.right;
+            img = d.p.right;
             isRIGHT = true;
             isUP = false;
             isDOWN = false;
             isLEFT = false;
         }else{
             // set the standard image
-            img = p.std;
+            img = d.p.std;
+        }
+
+        if(k.a || k.d || k.w || k.s){
+
+            // random scontro con il bot
+
+            if(r.nextInt(500) == 69){
+                System.out.println("Scontro con il bot!");
+            }
         }
 
     }
@@ -237,35 +269,40 @@ public class Map extends JPanel implements Runnable {
 
         Graphics2D g2 = (Graphics2D)g;
 
-        // draw the map
+        // normal condition
 
-        d.drawTile(g2, camX, camY, HITBOX_X, HITBOX_Y, isUP, isDOWN, isLEFT, isRIGHT);
+        if(!isFight){
 
-        // draw the player
+            // draw the map
 
-        d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
+            d.drawTile(g2, camX, camY, HITBOX_X, HITBOX_Y, isUP, isDOWN, isLEFT, isRIGHT);
 
-        // draw the bots
+            // draw the player
 
-        d.drawBot(g2, img, 1224 + camX, 572 + camY);
-        if(!isDialogBlocked && isDialog){
-            StringTokenizer st = new StringTokenizer(dialogText, "\n");
-            d.drawDialog(g2, 1250 + camX, 500 + camY, st.nextToken(), st.nextToken());
+            d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
+
+            // draw the bots
+
+            d.drawBot(g2, img, 1224 + camX, 572 + camY);
+            if(!isDialogBlocked && isDialog){
+                StringTokenizer st = new StringTokenizer(dialogText, "\n");
+                d.drawDialog(g2, 1250 + camX, 500 + camY, st.nextToken(), st.nextToken());
+            }
+
+            if(!isKeyDialogBlocked && isKeyDialog){
+                d.drawHeadDialog(g2, 1850 + camX, 1000 + camY, "Non puoi accedere alla chiave," , "Se non hai raggiunto 500xp!");
+            }
+
+            // manage colliding
+
+            isColliding = d.c.collision;
+            isPlayerColliding();
+
+            d.c.collision = false;
+
         }
-
-        if(!isKeyDialogBlocked && isKeyDialog){
-            d.drawHeadDialog(g2, 1850 + camX, 1000 + camY, "Non puoi accedere alla chiave," , "Se non hai raggiunto 500xp!");
-        }
-            
 
         g2.dispose();
-
-        // manage colliding
-
-        isColliding = d.c.collision;
-        isPlayerColliding();
-
-        d.c.collision = false;
 
     }
 

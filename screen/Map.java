@@ -61,12 +61,14 @@ public class Map extends JPanel implements Runnable {
 
     // fight
 
-    boolean isFight = false; // for the screen render
+    boolean isFight = true; // for the screen render
     boolean isFound = false; // for the initial dialog
     JLabel title = new JLabel(); // title
+    JLabel info = new JLabel(); // info during the fight
     Button firstUse = new Button();
     Button secondUse = new Button();
     Button thirdUse = new Button();
+    Button backAction = new Button("<-");
 
     boolean isFirstUse = false;
     boolean isSecondUse = false;
@@ -82,11 +84,15 @@ public class Map extends JPanel implements Runnable {
         firstUse.setVisible(false);
         secondUse.setVisible(false);
         thirdUse.setVisible(false);
+        backAction.setVisible(true);
+        info.setVisible(false);
 
         f.add(firstUse);
         f.add(secondUse);
         f.add(thirdUse);
         f.add(title);
+        f.add(backAction);
+        f.add(info);
 
         f.setIconImage(d.p.std);
         f.add(this);
@@ -341,15 +347,41 @@ public class Map extends JPanel implements Runnable {
 
             title.setVisible(true);
             title.setForeground(Color.BLACK);
-            title.setBounds(d.baseXDialog + 15, d.baseYDialog - 20, 500, 100);
+            title.setBounds(d.baseXDialog + 15, d.baseYDialog - 20, 400, 100);
             title.setText("Scegli il combattimento");
             title.setFont(new Font("Arial", Font.PLAIN, 24));
 
+            // info
+
+            info.setVisible(true);
+            info.setForeground(Color.BLACK);
+            info.setBounds(d.baseXDialog + 320, d.baseYDialog + 70, 400, 100);
+            info.setText("Hai usato 'attacco 1'! Non è efficace!");
+            title.setFont(new Font("Arial", Font.PLAIN, 18));
+
             // bottoni
+
+            backAction.setVisible(true);
+            backAction.setBounds(d.baseXDialog + 550, d.baseYDialog + 10, 40, 40);
+
+            backAction.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    isFirstUse = false;
+                    isSecondUse = false;
+                    isThirdUse = false;
+
+                    repaint();
+
+                }
+            });
+
+            // attack, defense, healing
 
             firstUse.setVisible(true);
             firstUse.setForeground(Color.BLACK);
-            firstUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 60, 200, 30);
+            firstUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 60, 250, 30);
             firstUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
             firstUse.addActionListener(new ActionListener() {
@@ -363,7 +395,7 @@ public class Map extends JPanel implements Runnable {
 
             secondUse.setVisible(true);
             secondUse.setForeground(Color.BLACK);
-            secondUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 120, 200, 30);
+            secondUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 120, 250, 30);
             secondUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
             secondUse.addActionListener(new ActionListener() {
@@ -377,7 +409,7 @@ public class Map extends JPanel implements Runnable {
 
             thirdUse.setVisible(true);
             thirdUse.setForeground(Color.BLACK);
-            thirdUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 180, 200, 30);
+            thirdUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 180, 250, 30);
             thirdUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
             thirdUse.addActionListener(new ActionListener() {
@@ -399,23 +431,41 @@ public class Map extends JPanel implements Runnable {
 
             } else if (isFirstUse) {
 
-                firstUse.setLabel("Attacco1");
-                secondUse.setLabel("Attacco2");
-                thirdUse.setLabel("Attacco3");
+                firstUse.setLabel("Attacco1 - " + d.f.attack1);
+                secondUse.setLabel("Attacco2 - " + d.f.attack2);
+                thirdUse.setLabel("Attacco3 - " + d.f.attack3);
 
                 firstUse.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
-                        // gestire attacco
+                        d.f.attack(info, 1);
+
+                    }
+                });
+
+                secondUse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        d.f.attack(info, 2);
+
+                    }
+                });
+
+                thirdUse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        d.f.attack(info, 3);
 
                     }
                 });
 
             } else if (isSecondUse) {
-                firstUse.setLabel("Difesa1");
-                secondUse.setLabel("Difesa2");
-                thirdUse.setLabel("Difesa3");
+                firstUse.setLabel("Difesa1 - " + d.f.defense1);
+                secondUse.setLabel("Difesa2 - " + d.f.defense2);
+                thirdUse.setLabel("Difesa3 - " + d.f.defense3);
 
                 secondUse.addActionListener(new ActionListener() {
                     @Override
@@ -427,9 +477,9 @@ public class Map extends JPanel implements Runnable {
                 });
 
             } else if (isThirdUse) {
-                firstUse.setLabel("Cura1");
-                secondUse.setLabel("Cura2");
-                thirdUse.setLabel("Cura3");
+                firstUse.setLabel("Cura1 - " + d.f.healing1);
+                secondUse.setLabel("Cura2 - " + d.f.healing2);
+                thirdUse.setLabel("Cura3 - " + d.f.healing3);
 
                 thirdUse.addActionListener(new ActionListener() {
                     @Override

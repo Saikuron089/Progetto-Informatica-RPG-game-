@@ -1,11 +1,14 @@
 package screen;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 // input
@@ -33,12 +36,11 @@ public class Map extends JPanel implements Runnable {
     keyboardInput k = new keyboardInput();
     final int WIDTH = 1024;
     final int HEIGHT = 768;
-    boolean isFight = true;
 
     // player info
 
-    final int HITBOX_X =  WIDTH/2 - 17; 
-    final int HITBOX_Y = HEIGHT/2 + 10;
+    final int HITBOX_X = WIDTH / 2 - 17;
+    final int HITBOX_Y = HEIGHT / 2 + 10;
     int SPEED = 4;
     boolean isColliding = false;
     boolean isUP = false;
@@ -57,8 +59,18 @@ public class Map extends JPanel implements Runnable {
     boolean isKeyDialog = false;
     boolean isKeyDialogBlocked = false;
 
-    // random 
+    // fight
 
+    boolean isFight = false; // for the screen render
+    boolean isFound = false; // for the initial dialog
+    JLabel title = new JLabel(); // title
+    Button firstUse = new Button();
+    Button secondUse = new Button();
+    Button thirdUse = new Button();
+
+    boolean isFirstUse = false;
+    boolean isSecondUse = false;
+    boolean isThirdUse = false;
 
     // camera settings
 
@@ -66,6 +78,15 @@ public class Map extends JPanel implements Runnable {
     int camY = -168;
 
     public Map() {
+
+        firstUse.setVisible(false);
+        secondUse.setVisible(false);
+        thirdUse.setVisible(false);
+
+        f.add(firstUse);
+        f.add(secondUse);
+        f.add(thirdUse);
+        f.add(title);
 
         f.setIconImage(d.p.std);
         f.add(this);
@@ -77,7 +98,7 @@ public class Map extends JPanel implements Runnable {
         // setup the image
 
         img = d.p.std;
-        
+
         // start the game thread
 
         startGameThread();
@@ -88,7 +109,7 @@ public class Map extends JPanel implements Runnable {
 
     }
 
-    public void startGameThread(){
+    public void startGameThread() {
 
         gameThread = new Thread(this);
         gameThread.start();
@@ -96,7 +117,7 @@ public class Map extends JPanel implements Runnable {
     }
 
     @Override
-    public void run(){
+    public void run() {
 
         double drawInterval = 1000000000 / FPS;
         double nextDrawTime = System.nanoTime() + drawInterval;
@@ -105,8 +126,8 @@ public class Map extends JPanel implements Runnable {
 
             // normal condition
 
-            if(!isFight){
-                
+            if (!isFight) {
+
                 // check if dialog is open
 
                 dialog();
@@ -115,31 +136,28 @@ public class Map extends JPanel implements Runnable {
 
                 keys();
 
-                // update 
+                // update
 
                 repaint();
 
                 update();
             }
 
-            
-            
-            try{
+            try {
 
                 double remainingTime = nextDrawTime - System.nanoTime();
-                remainingTime = remainingTime/1000000;
+                remainingTime = remainingTime / 1000000;
 
-                if(remainingTime < 0){
+                if (remainingTime < 0) {
                     remainingTime = 0;
                 }
-                
+
                 Thread.sleep((long) remainingTime);
 
                 nextDrawTime += drawInterval;
 
+            } catch (Exception e) {
 
-            }catch(Exception e){
-                
                 System.out.println("Erorre: " + e);
 
             }
@@ -148,54 +166,54 @@ public class Map extends JPanel implements Runnable {
 
     }
 
-    public void keys(){
+    public void keys() {
 
-        if(camX < -1250 && camX > -1320 && camY < -640 && camY > -850 && d.p.exp >= 500 && !d.p.firstKey){
+        if (camX < -1250 && camX > -1320 && camY < -640 && camY > -850 && d.p.exp >= 500 && !d.p.firstKey) {
             d.p.firstKey = true;
             d.p.getFirstKey();
         }
 
     }
 
-    public void dialog(){
+    public void dialog() {
 
         // dialog
 
-        if(camX < -700 && camX > -800 && camY < -180 && camY > -280 && dialogIndex == 0 && !isDialogBlocked){
+        if (camX < -700 && camX > -800 && camY < -180 && camY > -280 && dialogIndex == 0 && !isDialogBlocked) {
             isDialog = true;
             dialogIndex = 1;
-        }else if(dialogIndex == 1 && k.enter){
+        } else if (dialogIndex == 1 && k.enter) {
             dialogIndex++;
             k.enter = false;
-        }else if(dialogIndex == 2 && k.enter){
+        } else if (dialogIndex == 2 && k.enter) {
             dialogIndex++;
             k.enter = false;
-        }else if(dialogIndex == 3){
+        } else if (dialogIndex == 3) {
             dialogIndex = 0;
             isDialog = false;
             isDialogBlocked = true;
         }
 
-        if(camX < -1200 && camX > -1300 && camY < -640 && camY > -850 && d.p.exp < 500){
+        if (camX < -1200 && camX > -1300 && camY < -640 && camY > -850 && d.p.exp < 500) {
             isKeyDialog = true;
         }
 
     }
 
-    public void update(){
+    public void update() {
 
-        //System.out.println("CamX: " + camX + " CamY: " + camY);
+        // System.out.println("CamX: " + camX + " CamY: " + camY);
 
-        if(isDialog && dialogIndex == 1){
+        if (isDialog && dialogIndex == 1) {
             SPEED = 0;
             System.out.println("Dialog 1");
-        }else if(isDialog && dialogIndex == 2){
+        } else if (isDialog && dialogIndex == 2) {
             dialogText = "Mi hanno detto che sei forte! \nMa stai attento, il nemico è vicino!";
             SPEED = 0;
             System.out.println("Dialog 2");
-        }else if(isKeyDialog && !isKeyDialogBlocked){
+        } else if (isKeyDialog && !isKeyDialogBlocked) {
             SPEED = 0;
-            if(k.enter){
+            if (k.enter) {
                 isKeyDialog = false;
                 isKeyDialogBlocked = true;
             }
@@ -204,101 +222,225 @@ public class Map extends JPanel implements Runnable {
 
         // controlla che non esca dai bordi
 
-        if(k.w){
-            camY+= SPEED;
+        if (k.w) {
+            camY += SPEED;
             // set the up image
             img = d.p.up;
             isUP = true;
             isDOWN = false;
             isLEFT = false;
             isRIGHT = false;
-        }else if(k.a){
-            camX+= SPEED;
+        } else if (k.a) {
+            camX += SPEED;
             // set the left image
             img = d.p.left;
             isLEFT = true;
             isUP = false;
             isDOWN = false;
             isRIGHT = false;
-        }else if(k.s){
-            camY-= SPEED;
+        } else if (k.s) {
+            camY -= SPEED;
             // set the down image
             img = d.p.down;
             isDOWN = true;
             isUP = false;
             isLEFT = false;
             isRIGHT = false;
-        }else if(k.d){
-            camX-= SPEED;
+        } else if (k.d) {
+            camX -= SPEED;
             // set the right image
             img = d.p.right;
             isRIGHT = true;
             isUP = false;
             isDOWN = false;
             isLEFT = false;
-        }else{
+        } else {
             // set the standard image
             img = d.p.std;
         }
 
-        if(k.a || k.d || k.w || k.s){
+        if (k.a || k.d || k.w || k.s) {
 
             // random scontro con il bot
 
-            if(r.nextInt(500) == 69){
+            if (r.nextInt(100) == 69) {
                 System.out.println("Scontro con il bot!");
+                isFound = true;
             }
         }
 
     }
 
-    public void isPlayerColliding(){
+    public void isPlayerColliding() {
 
-        if(isColliding){    
+        if (isColliding) {
             SPEED = 0;
-        }else{
+        } else if (isFound) {
+            SPEED = 0;
+        } else {
             SPEED = 4;
         }
 
     }
 
-
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D) g;
 
-        // normal condition
+        // draw the map
 
-        if(!isFight){
+        d.drawTile(g2, camX, camY, HITBOX_X, HITBOX_Y, isUP, isDOWN, isLEFT, isRIGHT);
 
-            // draw the map
+        // draw the player
 
-            d.drawTile(g2, camX, camY, HITBOX_X, HITBOX_Y, isUP, isDOWN, isLEFT, isRIGHT);
+        d.drawPlayer(g2, img, WIDTH / 2 - 55, HEIGHT / 2 - 55);
 
-            // draw the player
+        // draw the bots
 
-            d.drawPlayer(g2, img, WIDTH/2 - 55, HEIGHT/2 - 55);
+        d.drawBot(g2, img, 1224 + camX, 572 + camY);
+        if (!isDialogBlocked && isDialog) {
+            StringTokenizer st = new StringTokenizer(dialogText, "\n");
+            d.drawDialog(g2, 1250 + camX, 500 + camY, st.nextToken(), st.nextToken());
+        }
 
-            // draw the bots
+        if (!isKeyDialogBlocked && isKeyDialog) {
+            d.drawHeadDialog(g2, 1850 + camX, 1000 + camY, "Non puoi accedere alla chiave,",
+                    "Se non hai raggiunto 500xp!");
+        }
 
-            d.drawBot(g2, img, 1224 + camX, 572 + camY);
-            if(!isDialogBlocked && isDialog){
-                StringTokenizer st = new StringTokenizer(dialogText, "\n");
-                d.drawDialog(g2, 1250 + camX, 500 + camY, st.nextToken(), st.nextToken());
+        // draw bot for fight
+
+        if (isFound) {
+            d.drawDialog(g2, WIDTH / 2 + 50, HEIGHT / 2 - 145, "Adesso ti uccido!", "");
+            d.drawBot(g2, img, WIDTH / 2, HEIGHT / 2 - 55);
+        }
+
+        if (isFound && k.enter) {
+            isFound = false;
+            isFight = true;
+            repaint();
+            d.f.newFight();
+        }
+
+        // manage colliding
+
+        isColliding = d.c.collision;
+        isPlayerColliding();
+
+        d.c.collision = false;
+
+        if (isFight) {
+
+            d.drawFight(g2);
+
+            // scritte
+
+            // title
+
+            title.setVisible(true);
+            title.setForeground(Color.BLACK);
+            title.setBounds(d.baseXDialog + 15, d.baseYDialog - 20, 500, 100);
+            title.setText("Scegli il combattimento");
+            title.setFont(new Font("Arial", Font.PLAIN, 24));
+
+            // bottoni
+
+            firstUse.setVisible(true);
+            firstUse.setForeground(Color.BLACK);
+            firstUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 60, 200, 30);
+            firstUse.setFont(new Font("Arial", Font.PLAIN, 24));
+
+            firstUse.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    isFirstUse = true;
+
+                }
+            });
+
+            secondUse.setVisible(true);
+            secondUse.setForeground(Color.BLACK);
+            secondUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 120, 200, 30);
+            secondUse.setFont(new Font("Arial", Font.PLAIN, 24));
+
+            secondUse.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    isSecondUse = true;
+
+                }
+            });
+
+            thirdUse.setVisible(true);
+            thirdUse.setForeground(Color.BLACK);
+            thirdUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 180, 200, 30);
+            thirdUse.setFont(new Font("Arial", Font.PLAIN, 24));
+
+            thirdUse.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                    isThirdUse = true;
+
+                }
+            });
+
+            // label to button
+
+            if (!isFirstUse && !isSecondUse && !isThirdUse) {
+
+                firstUse.setLabel("Attacco");
+                secondUse.setLabel("Difesa");
+                thirdUse.setLabel("Curati");
+
+            } else if (isFirstUse) {
+
+                firstUse.setLabel("Attacco1");
+                secondUse.setLabel("Attacco2");
+                thirdUse.setLabel("Attacco3");
+
+                firstUse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        // gestire attacco
+
+                    }
+                });
+
+            } else if (isSecondUse) {
+                firstUse.setLabel("Difesa1");
+                secondUse.setLabel("Difesa2");
+                thirdUse.setLabel("Difesa3");
+
+                secondUse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        // gestire difesa
+
+                    }
+                });
+
+            } else if (isThirdUse) {
+                firstUse.setLabel("Cura1");
+                secondUse.setLabel("Cura2");
+                thirdUse.setLabel("Cura3");
+
+                thirdUse.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        // gestire cura
+
+                    }
+                });
+
             }
-
-            if(!isKeyDialogBlocked && isKeyDialog){
-                d.drawHeadDialog(g2, 1850 + camX, 1000 + camY, "Non puoi accedere alla chiave," , "Se non hai raggiunto 500xp!");
-            }
-
-            // manage colliding
-
-            isColliding = d.c.collision;
-            isPlayerColliding();
-
-            d.c.collision = false;
 
         }
 
@@ -306,6 +448,8 @@ public class Map extends JPanel implements Runnable {
 
     }
 
-
+    public static void main(String[] args) {
+        new Map();
+    }
 
 }

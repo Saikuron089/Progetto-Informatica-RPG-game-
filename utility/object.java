@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
 public class object {
-    
+
     public BufferedImage erba;
     public BufferedImage montagna;
     public BufferedImage albero;
@@ -17,9 +17,17 @@ public class object {
     public BufferedImage wall;
     public BufferedImage key;
 
-    public object(){
-        
-        try{
+    // background
+
+    public BufferedImage back1;
+
+    // bots
+
+    public BufferedImage bots1;
+
+    public object() {
+
+        try {
 
             erba = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/erba.png"));
             montagna = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/montagna.png"));
@@ -31,11 +39,12 @@ public class object {
             chest_opened = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/chest_open.png"));
             wall = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/wall.png"));
             key = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/key.png"));
-            
-        }catch(Exception e){
+            back1 = ImageIO.read(getClass().getResourceAsStream("/assets/background/backgroundFight.png"));
+            bots1 = ImageIO.read(getClass().getResourceAsStream("/assets/bots/bot1.png"));
+
+        } catch (Exception e) {
             System.out.println("Errore: " + e);
         }
-        
 
     }
 

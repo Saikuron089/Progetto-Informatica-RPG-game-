@@ -1,12 +1,9 @@
 package screen;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 import java.util.StringTokenizer;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,13 +15,14 @@ import inputs.keyboardInput;
 // draw
 
 import utility.draw;
+import utility.fight;
 
 public class Map extends JPanel implements Runnable {
 
     BufferedImage img;
     Thread gameThread;
     final int FPS = 60;
-    JFrame f = new JFrame("Gioco");
+    public JFrame f = new JFrame("Gioco");
     Random r = new Random();
 
     // setup the map
@@ -61,8 +59,9 @@ public class Map extends JPanel implements Runnable {
 
     // fight
 
-    boolean isFight = true; // for the screen render
+    boolean isFight = false; // for the screen render
     boolean isFound = false; // for the initial dialog
+    fight fight = new fight();
     JLabel title = new JLabel(); // title
     JLabel info = new JLabel(); // info during the fight
     Button firstUse = new Button();
@@ -70,9 +69,7 @@ public class Map extends JPanel implements Runnable {
     Button thirdUse = new Button();
     Button backAction = new Button("<-");
 
-    boolean isFirstUse = false;
-    boolean isSecondUse = false;
-    boolean isThirdUse = false;
+    public boolean actionBlocked = false;
 
     // camera settings
 
@@ -84,7 +81,7 @@ public class Map extends JPanel implements Runnable {
         firstUse.setVisible(false);
         secondUse.setVisible(false);
         thirdUse.setVisible(false);
-        backAction.setVisible(true);
+        backAction.setVisible(false);
         info.setVisible(false);
 
         f.add(firstUse);
@@ -130,10 +127,16 @@ public class Map extends JPanel implements Runnable {
 
         while (gameThread != null) {
 
+            if(actionBlocked && k.enter){
+                System.out.println("sbloccato");
+                actionBlocked = false;
+                info.setVisible(false);
+            }
+
             // normal condition
 
             if (!isFight) {
-
+                
                 // check if dialog is open
 
                 dialog();
@@ -269,7 +272,7 @@ public class Map extends JPanel implements Runnable {
 
             // random scontro con il bot
 
-            if (r.nextInt(100) == 69) {
+            if (r.nextInt(70) == 69) {
                 System.out.println("Scontro con il bot!");
                 isFound = true;
             }
@@ -353,144 +356,40 @@ public class Map extends JPanel implements Runnable {
 
             // info
 
-            info.setVisible(true);
             info.setForeground(Color.BLACK);
             info.setBounds(d.baseXDialog + 320, d.baseYDialog + 70, 400, 100);
-            info.setText("Hai usato 'attacco 1'! Non è efficace!");
-            title.setFont(new Font("Arial", Font.PLAIN, 18));
 
             // bottoni
+
+            // backaction
 
             backAction.setVisible(true);
             backAction.setBounds(d.baseXDialog + 550, d.baseYDialog + 10, 40, 40);
 
-            backAction.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    isFirstUse = false;
-                    isSecondUse = false;
-                    isThirdUse = false;
-
-                    repaint();
-
-                }
-            });
-
-            // attack, defense, healing
+            // attack or first
 
             firstUse.setVisible(true);
             firstUse.setForeground(Color.BLACK);
             firstUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 60, 250, 30);
             firstUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
-            firstUse.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    isFirstUse = true;
-
-                }
-            });
+            // defense or second 
 
             secondUse.setVisible(true);
             secondUse.setForeground(Color.BLACK);
             secondUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 120, 250, 30);
             secondUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
-            secondUse.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                    isSecondUse = true;
-
-                }
-            });
+            // healing or third
 
             thirdUse.setVisible(true);
             thirdUse.setForeground(Color.BLACK);
             thirdUse.setBounds(d.baseXDialog + 15, d.baseYDialog + 180, 250, 30);
             thirdUse.setFont(new Font("Arial", Font.PLAIN, 24));
 
-            thirdUse.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
+            // action
 
-                    isThirdUse = true;
-
-                }
-            });
-
-            // label to button
-
-            if (!isFirstUse && !isSecondUse && !isThirdUse) {
-
-                firstUse.setLabel("Attacco");
-                secondUse.setLabel("Difesa");
-                thirdUse.setLabel("Curati");
-
-            } else if (isFirstUse) {
-
-                firstUse.setLabel("Attacco1 - " + d.f.attack1);
-                secondUse.setLabel("Attacco2 - " + d.f.attack2);
-                thirdUse.setLabel("Attacco3 - " + d.f.attack3);
-
-                firstUse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        d.f.attack(info, 1);
-
-                    }
-                });
-
-                secondUse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        d.f.attack(info, 2);
-
-                    }
-                });
-
-                thirdUse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        d.f.attack(info, 3);
-
-                    }
-                });
-
-            } else if (isSecondUse) {
-                firstUse.setLabel("Difesa1 - " + d.f.defense1);
-                secondUse.setLabel("Difesa2 - " + d.f.defense2);
-                thirdUse.setLabel("Difesa3 - " + d.f.defense3);
-
-                secondUse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        // gestire difesa
-
-                    }
-                });
-
-            } else if (isThirdUse) {
-                firstUse.setLabel("Cura1 - " + d.f.healing1);
-                secondUse.setLabel("Cura2 - " + d.f.healing2);
-                thirdUse.setLabel("Cura3 - " + d.f.healing3);
-
-                thirdUse.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-
-                        // gestire cura
-
-                    }
-                });
-
-            }
+            fight.fighting(this, f, firstUse, secondUse, thirdUse, backAction, info);
 
         }
 

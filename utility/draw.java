@@ -44,8 +44,7 @@ public class draw {
 
         }
 
-        public void drawTile(Graphics2D g2, int camX, int camY, int actualX, int actualY, boolean isUP, boolean isDOWN,
-                        boolean isLEFT, boolean isRIGHT) {
+        public void drawTile(Graphics2D g2, int camX, int camY, int actualX, int actualY, boolean isUP, boolean isDOWN, boolean isLEFT, boolean isRIGHT) {
 
                 // g2.drawImage(o.erba, i, j, 64, 64, null);
 

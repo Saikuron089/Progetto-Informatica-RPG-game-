@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JLabel;
+
 public class draw {
 
         public fight f = new fight();
@@ -208,7 +210,7 @@ public class draw {
 
         }
 
-        public void drawFight(Graphics2D g2) {
+        public void drawFight(Graphics2D g2, JLabel enemyLabel) {
 
                 g2.setColor(col);
                 g2.fillRect(0, 0, 2024, 2768);
@@ -232,7 +234,9 @@ public class draw {
 
                 g2.setColor(Color.BLACK);
 
-                g2.drawString("PE: " + f.pe, baseXEnemy + 72, baseYEnemy + 140);
+                enemyLabel.setBounds(baseXEnemy + 72, baseYEnemy + 130, 200, 10);
+                enemyLabel.setText("PE: " + f.pe + " - Difesa: " + f.activeDefenseEnemy);
+                enemyLabel.setVisible(true);
 
                 // render dialog box
 

@@ -15,7 +15,6 @@ import inputs.keyboardInput;
 // draw
 
 import utility.draw;
-import utility.fight;
 
 public class Map extends JPanel implements Runnable {
 
@@ -61,13 +60,13 @@ public class Map extends JPanel implements Runnable {
 
     boolean isFight = false; // for the screen render
     boolean isFound = false; // for the initial dialog
-    fight fight = new fight();
     JLabel title = new JLabel(); // title
     JLabel info = new JLabel(); // info during the fight
     Button firstUse = new Button();
     Button secondUse = new Button();
     Button thirdUse = new Button();
     Button backAction = new Button("<-");
+    JLabel enemyLabel = new JLabel("PE: ");
 
     public boolean actionBlocked = false;
 
@@ -83,6 +82,7 @@ public class Map extends JPanel implements Runnable {
         thirdUse.setVisible(false);
         backAction.setVisible(false);
         info.setVisible(false);
+        enemyLabel.setVisible(false);
 
         f.add(firstUse);
         f.add(secondUse);
@@ -90,6 +90,7 @@ public class Map extends JPanel implements Runnable {
         f.add(title);
         f.add(backAction);
         f.add(info);
+        f.add(enemyLabel);
 
         f.setIconImage(d.p.std);
         f.add(this);
@@ -342,7 +343,7 @@ public class Map extends JPanel implements Runnable {
 
         if (isFight) {
 
-            d.drawFight(g2);
+            d.drawFight(g2, enemyLabel);
 
             // scritte
 
@@ -350,9 +351,9 @@ public class Map extends JPanel implements Runnable {
 
             title.setVisible(true);
             title.setForeground(Color.BLACK);
-            title.setBounds(d.baseXDialog + 15, d.baseYDialog - 20, 400, 100);
-            title.setText("Scegli il combattimento");
-            title.setFont(new Font("Arial", Font.PLAIN, 24));
+            title.setBounds(d.baseXDialog + 15, d.baseYDialog - 20, 535, 100);
+            title.setText("Scegli il combattimento (PE: " + d.f.playerPE + ") - (Difesa: " + d.f.activeDefensePlayer + ")");
+            title.setFont(new Font("Arial", Font.PLAIN, 20));
 
             // info
 
@@ -389,7 +390,7 @@ public class Map extends JPanel implements Runnable {
 
             // action
 
-            fight.fighting(this, f, firstUse, secondUse, thirdUse, backAction, info);
+            d.f.fighting(this, f, firstUse, secondUse, thirdUse, backAction, info, enemyLabel);
 
         }
 

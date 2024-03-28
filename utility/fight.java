@@ -1,6 +1,7 @@
 package utility;
 
 import java.awt.Button;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -45,6 +46,8 @@ public class fight {
     public fight() {}
 
     public void newFight() {
+
+        System.out.println("New fight");
 
         isHealingBlocked = false;
         activeDefenseEnemy = 0;
@@ -149,20 +152,23 @@ public class fight {
 
             System.out.println("No effetto");
             playerPE -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
-            return "Hai usato l'attacco " + (type == 1 ? "attacco1" : type == 2 ? "attacco2" : "attacco3") + ". Non ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)";
+            return "Hai attaccato ma non ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)";
         } else {
 
             // effect (toglie pe al nemico = a quello dell'attacco scelto)
 
             System.out.println("Effetto");
 
-            pe -= ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy;
+            //pe -= ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy;
+
+            pe -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
 
             // toglie la difesa attiva del nemico
 
             activeDefenseEnemy = 0;
 
-            return "Hai usato l'attacco " + (type == 1 ? "attacco1" : type == 2 ? "attacco2" : "attacco3") + ". Ha avuto effetto (- " + (((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) + " PE)";
+            //return "Hai usato l'attacco " + (type == 1 ? "attacco1" : type == 2 ? "attacco2" : "attacco3") + ". Ha avuto effetto (- " + (((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) + " PE)";
+            return "<html>Hai attaccato e ha avuto effetto <br>(- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE nemico)</html>";
         }
 
     }
@@ -179,14 +185,14 @@ public class fight {
 
             System.out.println("No effetto");
             playerPE -= type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-            return "Hai usato la difesa " + (type == 1 ? "difesa1" : type == 2 ? "difesa2" : "difesa3") + ". Non ha avuto effetto (- " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE)";
+            return "Hai usato la difesa e non ha avuto effetto";
         } else {
 
             // effect (toglie pe al nemico = a quello della difesa scelta)
 
             System.out.println("Effetto");
             activeDefensePlayer = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-            return "Hai usato l'attacco " + (type == 1 ? "difesa1" : type == 2 ? "difesa2" : "difesa3") + ". Ha avuto effetto";
+            return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense)</html>";
         }
 
     }
@@ -200,7 +206,7 @@ public class fight {
             // healing (aggiunge pe al player = a quello della cura scelta)
 
             playerPE += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-            return "Ti sei curato! (+ " + (type == 1 ? healing1 : type == 2 ? healing2 : healing3) + " PE)";
+            return "<html>Ti sei curato! <br>(+ " + (type == 1 ? healing1 : type == 2 ? healing2 : healing3) + " PE)</html>";
         }
 
     }
@@ -231,7 +237,7 @@ public class fight {
 
                 activeDefensePlayer = 0;
 
-                return "Il nemico ha usato l'attacco. Ha avuto effetto (- " + (((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer) < 0 ? 0 : ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer)) + " PE)";
+                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)</html>";
             }
 
         } else if(type == 1){
@@ -251,7 +257,7 @@ public class fight {
 
                 System.out.println("Effetto");
                 activeDefenseEnemy = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-                return "Il nemico ha usato la difesa. Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE)";
+                return "<html>Il nemico ha usato la difesa. <br>Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense nemico)</html>";
             }
 
         } else {
@@ -268,14 +274,79 @@ public class fight {
             } else {
                 System.out.println("Effetto");
                 pe += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-                return "Il nemico si è curato. Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE)";
+                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE)</html>";
             }
 
         }
 
     }
 
-    public void fighting(Map m, JFrame f, Button b1, Button b2, Button b3, Button back, JLabel info){
+    public void cleanActionListener(Button b1, Button b2, Button b3){
+
+        // reset action listener
+
+        ActionListener[] listeners = b1.getActionListeners();
+        for(ActionListener listener : listeners) {
+            b1.removeActionListener(listener);
+        }
+        
+        listeners = b2.getActionListeners();
+        for(ActionListener listener : listeners) {
+            b2.removeActionListener(listener);
+        }
+
+        listeners = b3.getActionListeners();
+        for(ActionListener listener : listeners) {
+            b3.removeActionListener(listener);
+        }
+
+    }
+
+    public void fighting(Map m, JFrame f, Button b1, Button b2, Button b3, Button back, JLabel info, JLabel enemyLabel){
+
+
+        /***************************************************** */
+        // ACTION LISTENER
+
+        ActionListener base1 = e -> {
+            isFirstUse = true;
+            m.f.requestFocus();
+        };
+
+        ActionListener base2 = e -> {
+            isSecondUse = true;
+            m.f.requestFocus();
+        };
+
+        ActionListener base3 = e -> {
+            isThirdUse = true;
+            m.f.requestFocus();
+        };
+
+        /*********************************************************** */
+
+        // back button
+
+        back.addActionListener(e -> {
+
+            m.actionBlocked = false;
+
+            isFirstUse = false;
+            isSecondUse = false;
+            isThirdUse = false;
+
+            // reset action listener
+
+            cleanActionListener(b1, b2, b3);
+
+            // add base option
+
+            b1.addActionListener(base1);
+            b2.addActionListener(base2);
+            b3.addActionListener(base3);
+
+            m.f.requestFocus();
+        });
 
         // base option **********************************
 
@@ -286,26 +357,9 @@ public class fight {
             b3.setLabel("Cura");
             info.setVisible(false);
 
-            b1.addActionListener(e -> {
-                
-                isFirstUse = true;
-                m.f.requestFocus();
-
-            });
-
-            b2.addActionListener(e -> {
-                
-                isSecondUse = true;
-                m.f.requestFocus();
-
-            });
-
-            b3.addActionListener(e -> {
-
-                isThirdUse = true;
-                m.f.requestFocus();
-                
-            });
+            b1.addActionListener(base1);
+            b2.addActionListener(base2);
+            b3.addActionListener(base3);
         }
 
         // end base option **********************************
@@ -313,9 +367,10 @@ public class fight {
         // attack option ************************************
 
         if(isFirstUse){
-            b1.setLabel("Attacco1");
-            b2.setLabel("Attacco2");
-            b3.setLabel("Attacco3");
+            cleanActionListener(b1, b2, b3);
+            b1.setLabel("Attacco1 (" + attack1 + ")");
+            b2.setLabel("Attacco2 (" + attack2 + ")");
+            b3.setLabel("Attacco3 (" + attack3 + ")");
 
             b1.addActionListener(e -> {
 
@@ -344,8 +399,80 @@ public class fight {
                 m.actionBlocked = true;
                 m.f.requestFocus();
             });
+        }else if(isSecondUse){ 
+
+            cleanActionListener(b1, b2, b3);
+            // defense option ************************************
+
+            b1.setLabel("Difesa1 (" + defense1 + ")");
+            b2.setLabel("Difesa2 (" + defense2 + ")");
+            b3.setLabel("Difesa3 (" + defense3 + ")");
+
+            b1.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(defense(1));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
+
+            b2.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(defense(2));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
+
+            b3.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(defense(3));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
+
+        }else if(isThirdUse){   
+
+            cleanActionListener(b1, b2, b3);
+            // healing option ************************************
+
+            b1.setLabel("Cura1 (" + healing1 + ")");
+            b2.setLabel("Cura2 (" + healing2 + ")");
+            b3.setLabel("Cura3 (" + healing3 + ")");
+
+            b1.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(healing(1));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
+
+            b2.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(healing(2));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
+
+            b3.addActionListener(e -> {
+                if(m.actionBlocked)
+                    return;
+                info.setText(healing(3));
+                info.setVisible(true);
+                m.actionBlocked = true;
+                m.f.requestFocus();
+            });
         }
         
+
 
     }
 

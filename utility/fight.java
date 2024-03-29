@@ -45,6 +45,7 @@ public class fight {
     boolean isSecondUse = false;
     boolean isThirdUse = false;
     boolean closeInfo = false;
+    boolean isFinished = false;
 
 
     public fight() {}
@@ -53,12 +54,16 @@ public class fight {
 
         System.out.println("New fight");
 
+        playerTurn = true;
+        enemyTurn = false;
         isHealingBlocked = false;
         activeDefenseEnemy = 0;
         activeDefensePlayer = 0;
         isFirstUse = false;
         isSecondUse = false;
         isThirdUse = false;
+        closeInfo = false;
+        isFinished = false;
 
         try {
 
@@ -229,7 +234,7 @@ public class fight {
 
         Random r = new Random();
 
-        int type = r.nextInt(3) + 1;
+        int type = r.nextInt(3);
 
         if(type == 0){
 
@@ -245,10 +250,21 @@ public class fight {
             } else {
                 System.out.println("Effetto");
 
+                if(activeDefensePlayer > 0){
+                    int realAttack = (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer;
+                    if(realAttack >= 0){
+                        playerPE -= realAttack;
+                        // toglie la difesa attiva del nemico
+                        activeDefensePlayer = 0;
+                        return "<html>Il nemico ha attaccato e ha avuto effetto <br>(- " + realAttack + " PE - 0 scudo)<br>Premi invio.</html>";
+                    }else {
+                        activeDefensePlayer = 0;
+                        return "<html>Il nemico ha attacco ma il tuo scudo <br>ha neutralizzato l'attacco<br>Premi invio.</html>";
+                    }
+                
+                }
+
                 playerPE -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
-
-                activeDefensePlayer = 0;
-
                 return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE) <br>Premi invio.</html>";
             }
 
@@ -286,7 +302,7 @@ public class fight {
             } else {
                 System.out.println("Effetto");
                 pe += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE) <br>Premi invio.</html>";
+                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE nemico) <br>Premi invio.</html>";
             }
 
         }
@@ -316,6 +332,37 @@ public class fight {
 
     public void fighting(Map m, JFrame f, Button b1, Button b2, Button b3, Button back, JLabel info, JLabel enemyLabel){
 
+        // check winning
+
+        if(pe <= 0 && !isFinished){
+            // ridurre exp
+
+            m.d.p.updateExp(10);
+
+            // messaggio di sconfitta
+
+            info.setText("<html>Hai vinto! <br>Il tuo punteggio è aumentato di 10 PE.<br>Premi invio.</html>");
+            info.setVisible(true);
+
+            isFinished = true;
+
+        }
+
+        // tornare al menu
+
+        if(isFinished && m.k.enter){
+            m.isFight = false;
+            m.isFound = false;
+            m.actionBlocked = false;
+            b1.setVisible(false);
+            b2.setVisible(false);
+            b3.setVisible(false);
+            back.setVisible(false);
+            info.setVisible(false);
+            enemyLabel.setVisible(false);
+            return;
+        }
+
         if(closeInfo && m.k.enter){
             info.setVisible(false);
             closeInfo = false;
@@ -336,6 +383,11 @@ public class fight {
         }
 
         /***************************************************** */
+
+        // CLEAN ACTION LISTENER
+
+        cleanActionListener(b1, b2, b3);
+
         // ACTION LISTENER
 
         ActionListener base1 = e -> {

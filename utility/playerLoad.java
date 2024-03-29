@@ -81,4 +81,36 @@ public class playerLoad {
 
     }
 
+    public void updateExp(int newExp){
+
+        try{
+
+            // get actual exp
+
+            FileReader f1 = new FileReader("user.txt");
+            BufferedReader fIN = new BufferedReader(f1);
+
+            String userData = fIN.readLine();
+
+            StringTokenizer st = new StringTokenizer(userData , "-");
+            st.nextToken();
+            exp = Integer.parseInt(st.nextToken());
+
+            f1.close();
+
+            FileWriter f = new FileWriter("user.txt");
+            PrintWriter fOUT = new PrintWriter(f);
+            
+            fOUT.write(nome + "-" + (exp + newExp) + "-" + firstKey + "-" + secondKey);
+
+            this.exp = exp + newExp;
+
+            f.close();
+
+        }catch(Exception e){
+            System.out.println("Errore: " + e);
+        }
+
+    }
+
 }

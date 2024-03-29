@@ -26,7 +26,7 @@ public class Map extends JPanel implements Runnable {
 
     // setup the map
 
-    draw d = new draw();
+    public draw d = new draw();
 
     // screen settings
 
@@ -58,15 +58,15 @@ public class Map extends JPanel implements Runnable {
 
     // fight
 
-    boolean isFight = false; // for the screen render
-    boolean isFound = false; // for the initial dialog
-    JLabel title = new JLabel(); // title
-    JLabel info = new JLabel(); // info during the fight
-    Button firstUse = new Button();
-    Button secondUse = new Button();
-    Button thirdUse = new Button();
-    Button backAction = new Button("<-");
-    JLabel enemyLabel = new JLabel("PE: ");
+    public boolean isFight = false; // for the screen render
+    public boolean isFound = false; // for the initial dialog
+    public JLabel title = new JLabel(); // title
+    public JLabel info = new JLabel(); // info during the fight
+    public Button firstUse = new Button();
+    public Button secondUse = new Button();
+    public Button thirdUse = new Button();
+    public Button backAction = new Button("<-");
+    public JLabel enemyLabel = new JLabel("PE: ");
 
     public boolean actionBlocked = false;
 

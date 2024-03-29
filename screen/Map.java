@@ -30,7 +30,7 @@ public class Map extends JPanel implements Runnable {
 
     // screen settings
 
-    keyboardInput k = new keyboardInput();
+    public keyboardInput k = new keyboardInput();
     final int WIDTH = 1024;
     final int HEIGHT = 768;
 
@@ -131,7 +131,6 @@ public class Map extends JPanel implements Runnable {
             if(actionBlocked && k.enter){
                 System.out.println("sbloccato");
                 actionBlocked = false;
-                info.setVisible(false);
             }
 
             // normal condition

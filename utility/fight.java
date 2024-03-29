@@ -36,11 +36,15 @@ public class fight {
     public int activeDefenseEnemy = 0;
     public int activeDefensePlayer = 0;
 
+    public boolean playerTurn = true;
+    public boolean enemyTurn = false;
+
     // GUI
 
     boolean isFirstUse = false;
     boolean isSecondUse = false;
     boolean isThirdUse = false;
+    boolean closeInfo = false;
 
 
     public fight() {}
@@ -152,7 +156,7 @@ public class fight {
 
             System.out.println("No effetto");
             playerPE -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
-            return "Hai attaccato ma non ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)";
+            return "<html>Hai attaccato ma non ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)<br>Premi invio.</html>";
         } else {
 
             // effect (toglie pe al nemico = a quello dell'attacco scelto)
@@ -161,14 +165,22 @@ public class fight {
 
             //pe -= ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy;
 
+            if(activeDefenseEnemy > 0){
+                int realAttack = (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy;
+                if(realAttack >= 0){
+                    pe -= realAttack;
+                    // toglie la difesa attiva del nemico
+                    activeDefenseEnemy = 0;
+                    return "<html>Hai attaccato e ha avuto effetto <br>(- " + realAttack + " PE nemico - 0 scudo nemico)<br>Premi invio.</html>";
+                }else {
+                    activeDefenseEnemy = 0;
+                    return "<html>Hai attaccato ma lo scudo del nemico<br>ha neutralizzato l'attacco<br>Premi invio.</html>";
+                }
+            
+            }
+
             pe -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
-
-            // toglie la difesa attiva del nemico
-
-            activeDefenseEnemy = 0;
-
-            //return "Hai usato l'attacco " + (type == 1 ? "attacco1" : type == 2 ? "attacco2" : "attacco3") + ". Ha avuto effetto (- " + (((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) < 0 ? 0 : (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefenseEnemy) + " PE)";
-            return "<html>Hai attaccato e ha avuto effetto <br>(- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE nemico)</html>";
+            return "<html>Hai attaccato e ha avuto effetto <br>(- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE nemico)<br>Premi invio.</html>";
         }
 
     }
@@ -185,14 +197,14 @@ public class fight {
 
             System.out.println("No effetto");
             playerPE -= type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-            return "Hai usato la difesa e non ha avuto effetto";
+            return "<html>Hai usato la difesa e non ha avuto effetto <br>Premi invio.</html>";
         } else {
 
             // effect (toglie pe al nemico = a quello della difesa scelta)
 
             System.out.println("Effetto");
             activeDefensePlayer = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-            return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense)</html>";
+            return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense)<br>Premi invio.</html>";
         }
 
     }
@@ -200,13 +212,13 @@ public class fight {
     public String healing(int type){
 
         if(isHealingBlocked){
-            return "Hai usato la cura! Non ha avuto effetto.";
+            return "<html>Hai usato la cura! Non ha avuto effetto. <br>Premi invio.</html>";
         }else{
 
             // healing (aggiunge pe al player = a quello della cura scelta)
 
             playerPE += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-            return "<html>Ti sei curato! <br>(+ " + (type == 1 ? healing1 : type == 2 ? healing2 : healing3) + " PE)</html>";
+            return "<html>Ti sei curato! <br>(+ " + (type == 1 ? healing1 : type == 2 ? healing2 : healing3) + " PE)<br>Premi invio.</html>";
         }
 
     }
@@ -229,15 +241,15 @@ public class fight {
 
             if(hasEffect == 45){
                 System.out.println("No effetto");
-                return "Il nemico ha usato l'attacco. Non ha avuto effetto.";
+                return "<html>Il nemico ha usato l'attacco. Non ha avuto effetto. <br>Premi invio.</html>";
             } else {
                 System.out.println("Effetto");
 
-                playerPE -= ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer) < 0 ? 0 : ((type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer);
+                playerPE -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
 
                 activeDefensePlayer = 0;
 
-                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE)</html>";
+                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE) <br>Premi invio.</html>";
             }
 
         } else if(type == 1){
@@ -250,14 +262,14 @@ public class fight {
 
             if(hasEffect == 45){
                 System.out.println("No effetto");
-                return "Il nemico ha usato la difesa. Non ha avuto effetto.";
+                return "<html>Il nemico ha usato la difesa. Non ha avuto effetto.<br>Premi invio.</html>";
             } else {
 
                 // defense (aggiunge pe al nemico = a quello della difesa scelta)
 
                 System.out.println("Effetto");
                 activeDefenseEnemy = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-                return "<html>Il nemico ha usato la difesa. <br>Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense nemico)</html>";
+                return "<html>Il nemico ha usato la difesa. <br>Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense nemico) <br>Premi invio.</html>";
             }
 
         } else {
@@ -270,11 +282,11 @@ public class fight {
 
             if(hasEffect == 45){
                 System.out.println("No effetto");
-                return "Il nemico ha usato la cura. Non ha avuto effetto.";
+                return "<html>Il nemico ha usato la cura. Non ha avuto effetto. <br>Premi invio.</html>";
             } else {
                 System.out.println("Effetto");
                 pe += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE)</html>";
+                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE) <br>Premi invio.</html>";
             }
 
         }
@@ -304,6 +316,24 @@ public class fight {
 
     public void fighting(Map m, JFrame f, Button b1, Button b2, Button b3, Button back, JLabel info, JLabel enemyLabel){
 
+        if(closeInfo && m.k.enter){
+            info.setVisible(false);
+            closeInfo = false;
+        }
+
+        if(enemyTurn && !m.actionBlocked){
+
+            info.setText(enemyTurn());
+            System.out.println(info.getText());
+            info.setVisible(true);
+            m.actionBlocked = true;
+            enemyTurn = false;
+            playerTurn = true;
+            closeInfo = true;
+            m.k.enter = false;
+            m.f.requestFocus();
+
+        }
 
         /***************************************************** */
         // ACTION LISTENER
@@ -379,6 +409,8 @@ public class fight {
                 info.setText(attack(1));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -388,6 +420,8 @@ public class fight {
                 info.setText(attack(2));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -397,6 +431,8 @@ public class fight {
                 info.setText(attack(3));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
         }else if(isSecondUse){ 
@@ -414,6 +450,8 @@ public class fight {
                 info.setText(defense(1));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -423,6 +461,8 @@ public class fight {
                 info.setText(defense(2));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -432,6 +472,8 @@ public class fight {
                 info.setText(defense(3));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -450,6 +492,8 @@ public class fight {
                 info.setText(healing(1));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -459,6 +503,8 @@ public class fight {
                 info.setText(healing(2));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
 
@@ -468,6 +514,8 @@ public class fight {
                 info.setText(healing(3));
                 info.setVisible(true);
                 m.actionBlocked = true;
+                enemyTurn = true;
+                playerTurn = false;
                 m.f.requestFocus();
             });
         }

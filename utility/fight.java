@@ -20,6 +20,8 @@ public class fight {
     public BufferedImage imgBot;
     public int playerPE;
 
+    // for the player
+
     public int attack1;
     public int defense1;
     public int healing1;
@@ -31,6 +33,22 @@ public class fight {
     public int attack3;
     public int defense3;
     public int healing3;
+
+    // for the enemy
+
+    public int attack1Enemy;
+    public int defense1Enemy;
+    public int healing1Enemy;
+
+    public int attack2Enemy;
+    public int defense2Enemy;
+    public int healing2Enemy;
+
+    public int attack3Enemy;
+    public int defense3Enemy;
+    public int healing3Enemy;
+
+    // manage the fight
 
     public boolean isHealingBlocked = false;
     public int activeDefenseEnemy = 0;
@@ -78,7 +96,7 @@ public class fight {
             playerPE = Integer.parseInt(st.nextToken());
 
             Random r = new Random();
-            pe = playerPE + (r.nextInt(30) - 15);
+            pe = playerPE + (r.nextInt(55) - 20);
             System.out.println("Player: " + playerPE);
             System.out.println("enemy: " + pe);
 
@@ -88,23 +106,21 @@ public class fight {
 
             // update attack, defense and healing based of exp
 
-            int baseExp = playerPE / 2;
+            int baseExp = playerPE / 3;
 
             attack1 = baseExp / (r.nextInt(3) + 1);
-            defense1 = baseExp / (r.nextInt(3) + 1);
-            healing1 = baseExp / (r.nextInt(3) + 1);
+            defense1 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.3);    // più svantaggioso
+            healing1 = (int) (baseExp / (r.nextInt(3) + 1) * 1.2);                    // medio vantaggioso
 
             attack2 = baseExp / (r.nextInt(3) + 1);
-            defense2 = baseExp / (r.nextInt(3) + 1);
-            healing2 = baseExp / (r.nextInt(3) + 1);
+            defense2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
+            healing2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
 
             attack3 = baseExp / (r.nextInt(3) + 1);
-            defense3 = baseExp / (r.nextInt(3) + 1);
-            healing3 = baseExp / (r.nextInt(3) + 1);
+            defense3 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.2);    // medio svantaggioso
+            healing3 = (int) (baseExp / (r.nextInt(3) + 1) * 1.3);                    // più svantaggioso
 
             // add or update player exp on attack, defense and healing
-
-
 
             f = new FileReader("potenziamenti_ottenuti.txt");
             fIN = new BufferedReader(f);
@@ -123,25 +139,40 @@ public class fight {
                 int healing = Integer.parseInt(st.nextToken());
 
                 if(r.nextInt(3) == 0){
-                    attack1 += attack;
-                    defense1 += defense;
-                    healing1 += healing;
+                    attack1 += attack / 2;
+                    defense2 += defense / 2;
+                    healing3 += healing / 2;
                 } else if(r.nextInt(3) == 1){
-                    attack2 += attack;
-                    defense2 += defense;
-                    healing2 += healing;
+                    attack3 += attack / 2;
+                    defense1 += defense / 2;
+                    healing2 += healing / 2;
                 } else {
-                    attack3 += attack;
-                    defense3 += defense;
-                    healing3 += healing;
+                    attack2 += attack / 2;
+                    defense3 += defense / 2;
+                    healing1 += healing / 2;
                 }
 
                 line = fIN.readLine();
                 
             }
 
-
             f.close();
+
+            // setup enemy attack, defense and healing
+
+            int Basepe = pe / 2;
+
+            attack1Enemy = (int) ((Basepe / (r.nextInt(3) + 1)));
+            defense1Enemy = (int) ((Basepe / (r.nextInt(3) + 1)) * 1.15);
+            healing1Enemy = (int) ((Basepe / (r.nextInt(3) + 1)));
+
+            attack2Enemy = (int) ((Basepe / (r.nextInt(3) + 1)));
+            defense2Enemy = (int) ((Basepe / (r.nextInt(3) + 1)));
+            healing2Enemy = (int) ((Basepe / (r.nextInt(3) + 1)) * 1.15);
+
+            attack3Enemy = (int) ((Basepe / (r.nextInt(3) + 1)));
+            defense3Enemy = (int) ((Basepe / (r.nextInt(3) + 1)) * 1.15);
+            healing3Enemy = (int) ((Basepe / (r.nextInt(3) + 1)) * 1.15);
 
         } catch (Exception e) {
             System.out.println("Errore: " + e);
@@ -155,7 +186,7 @@ public class fight {
 
         int hasEffect = r.nextInt(100);
 
-        if(hasEffect == 45){
+        if(hasEffect < 10){
 
             // no effect (toglie pe al player = a quello dell'attacco scelto)
 
@@ -205,11 +236,25 @@ public class fight {
             return "<html>Hai usato la difesa e non ha avuto effetto <br>Premi invio.</html>";
         } else {
 
-            // effect (toglie pe al nemico = a quello della difesa scelta)
-
-            System.out.println("Effetto");
-            activeDefensePlayer = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-            return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense)<br>Premi invio.</html>";
+            if(type == 1){
+                // 100% difesa al player e 25% al nemico
+                activeDefensePlayer = defense1;
+                activeDefenseEnemy = defense1 / 4;
+                return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + defense1 + " Defense)<br>Il nemico ha ricevuto " + defense1/4 +" Defense<br>Premi invio.</html>";
+                
+            }else if(type == 2){
+                // riduce la difesa del player
+                activeDefensePlayer = defense2;
+                defense1 *= 0.95;
+                defense2 *= 0.95;
+                defense3 *= 0.95;
+                return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + defense2 + " Defense)<br>Le tue difese sono state ridotte del 5%<br>Premi invio.</html>";
+            }else{
+                // toglie 5% di pe al player
+                activeDefensePlayer = defense3;
+                playerPE *= 0.95;
+                return "<html>Hai usato la difesa e ha avuto effetto <br>(+ " + defense3 + " Defense)<br>I tuoi PE sono stati ridotti del 5%<br>Premi invio.</html>";
+            }
         }
 
     }
@@ -220,92 +265,90 @@ public class fight {
             return "<html>Hai usato la cura! Non ha avuto effetto. <br>Premi invio.</html>";
         }else{
 
-            // healing (aggiunge pe al player = a quello della cura scelta)
+            if(type == 1){
+                // 25% cura al nemico
+                playerPE += healing1;
+                pe += healing1 / 4;
+                return "<html>Ti sei curato! <br>(+ " + healing1 + " PE)<br>Il nemico ha ricevuto " + healing1/4 +" PE<br>Premi invio.</html>";
+            }else if(type == 2){
+                // toglie la difesa al player
+                playerPE += healing2;
+                activeDefensePlayer = 0;
+                return "<html>Ti sei curato! <br>(+ " + healing2 + " PE)<br>La tua difesa è stata rimossa<br>Premi invio.</html>";
+            }else{
+                // riduce gli attacchi del player
+                playerPE += healing3;
+                attack1 *= 0.9;
+                attack2 *= 0.9;
+                attack3 *= 0.9;
+                return "<html>Ti sei curato! <br>(+ " + healing3 + " PE)<br>I tuoi attacchi sono stati ridotti del 10%<br>Premi invio.</html>";
+            }
 
-            playerPE += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-            return "<html>Ti sei curato! <br>(+ " + (type == 1 ? healing1 : type == 2 ? healing2 : healing3) + " PE)<br>Premi invio.</html>";
         }
 
     }
 
     public String enemyTurn(){
-
-        // choose attack, defense or healing
-
         Random r = new Random();
-
-        int type = r.nextInt(3);
-
-        if(type == 0){
-
-            // attack
-
-            type = r.nextInt(3) + 1;
-
-            int hasEffect = r.nextInt(100);
-
-            if(hasEffect == 45){
-                System.out.println("No effetto");
-                return "<html>Il nemico ha usato l'attacco. Non ha avuto effetto. <br>Premi invio.</html>";
+        
+        // Valuta la situazione attuale
+        if(pe <= playerPE * 0.3) {
+            // Se il nemico ha pochi PE, prioritizza la cura
+            if(r.nextInt(100) < 80) {
+                int type = r.nextInt(3) + 1;
+                pe += type == 1 ? healing1Enemy : type == 2 ? healing2Enemy : healing3Enemy;
+                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? healing1Enemy : type == 2 ? healing2Enemy : healing3Enemy) + " PE nemico) <br>Premi invio.</html>";
+            }
+        } 
+        else if(playerPE <= pe * 0.5) {
+            // Se il giocatore ha pochi PE, attacca
+            int type = r.nextInt(3) + 1;
+            if(activeDefensePlayer > 0){
+                int realAttack = (type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy) - activeDefensePlayer;
+                if(realAttack >= 0){
+                    playerPE -= realAttack;
+                    activeDefensePlayer = 0;
+                    return "<html>Il nemico ha attaccato e ha avuto effetto <br>(- " + realAttack + " PE - 0 scudo)<br>Premi invio.</html>";
+                }else {
+                    activeDefensePlayer = 0;
+                    return "<html>Il nemico ha attaccato ma il tuo scudo <br>ha neutralizzato l'attacco<br>Premi invio.</html>";
+                }
+            }
+            playerPE -= type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy;
+            return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy) + " PE) <br>Premi invio.</html>";
+        }
+        else {
+            // Altrimenti, valuta la strategia migliore
+            if(activeDefensePlayer == 0 && r.nextInt(100) < 70) {
+                // Se il giocatore non ha difese attive, attacca con il 70% di probabilità
+                int type = r.nextInt(3) + 1;
+                playerPE -= type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy;
+                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy) + " PE) <br>Premi invio.</html>";
+            } else if(activeDefenseEnemy == 0 && r.nextInt(100) < 50) {  
+                // Se il nemico non ha difese attive, si difende con il 50% di probabilità
+                int type = r.nextInt(3) + 1;
+                activeDefenseEnemy = type == 1 ? defense1Enemy : type == 2 ? defense2Enemy : defense3Enemy;
+                return "<html>Il nemico ha usato la difesa. <br>Ha avuto effetto (+ " + (type == 1 ? defense1Enemy : type == 2 ? defense2Enemy : defense3Enemy) + " Defense nemico) <br>Premi invio.</html>";
             } else {
-                System.out.println("Effetto");
-
+                // Altrimenti attacca
+                int type = r.nextInt(3) + 1;
                 if(activeDefensePlayer > 0){
-                    int realAttack = (type == 1 ? attack1 : type == 2 ? attack2 : attack3) - activeDefensePlayer;
+                    int realAttack = (type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy) - activeDefensePlayer;
                     if(realAttack >= 0){
                         playerPE -= realAttack;
-                        // toglie la difesa attiva del nemico
                         activeDefensePlayer = 0;
                         return "<html>Il nemico ha attaccato e ha avuto effetto <br>(- " + realAttack + " PE - 0 scudo)<br>Premi invio.</html>";
                     }else {
                         activeDefensePlayer = 0;
-                        return "<html>Il nemico ha attacco ma il tuo scudo <br>ha neutralizzato l'attacco<br>Premi invio.</html>";
+                        return "<html>Il nemico ha attaccato ma il tuo scudo <br>ha neutralizzato l'attacco<br>Premi invio.</html>";
                     }
-                
                 }
-
-                playerPE -= type == 1 ? attack1 : type == 2 ? attack2 : attack3;
-                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1 : type == 2 ? attack2 : attack3) + " PE) <br>Premi invio.</html>";
+                playerPE -= type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy;
+                return "<html>Il nemico ha usato l'attacco. <br>Ha avuto effetto (- " + (type == 1 ? attack1Enemy : type == 2 ? attack2Enemy : attack3Enemy) + " PE) <br>Premi invio.</html>";
             }
-
-        } else if(type == 1){
-            
-            // defense
-
-            type = r.nextInt(3) + 1;
-
-            int hasEffect = r.nextInt(100);
-
-            if(hasEffect == 45){
-                System.out.println("No effetto");
-                return "<html>Il nemico ha usato la difesa. Non ha avuto effetto.<br>Premi invio.</html>";
-            } else {
-
-                // defense (aggiunge pe al nemico = a quello della difesa scelta)
-
-                System.out.println("Effetto");
-                activeDefenseEnemy = type == 1 ? defense1 : type == 2 ? defense2 : defense3;
-                return "<html>Il nemico ha usato la difesa. <br>Ha avuto effetto (+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " Defense nemico) <br>Premi invio.</html>";
-            }
-
-        } else {
-            
-            // healing
-
-            type = r.nextInt(3) + 1;
-
-            int hasEffect = r.nextInt(100);
-
-            if(hasEffect == 45){
-                System.out.println("No effetto");
-                return "<html>Il nemico ha usato la cura. Non ha avuto effetto. <br>Premi invio.</html>";
-            } else {
-                System.out.println("Effetto");
-                pe += type == 1 ? healing1 : type == 2 ? healing2 : healing3;
-                return "<html>Il nemico si è curato.<br>(+ " + (type == 1 ? defense1 : type == 2 ? defense2 : defense3) + " PE nemico) <br>Premi invio.</html>";
-            }
-
         }
+
+        return "<html>Il nemico ha passato.</html>";
 
     }
 
@@ -342,6 +385,18 @@ public class fight {
             // messaggio di sconfitta
 
             info.setText("<html>Hai vinto! <br>Il tuo punteggio è aumentato di 10 PE.<br>Premi invio.</html>");
+            info.setVisible(true);
+
+            isFinished = true;
+
+        }else if(playerPE <= 0 && !isFinished){
+            // ridurre exp
+
+            m.d.p.updateExp(-10);
+
+            // messaggio di sconfitta
+
+            info.setText("<html>Hai perso! <br>Il tuo punteggio è diminuito di 10 PE.<br>Premi invio.</html>");
             info.setVisible(true);
 
             isFinished = true;
@@ -450,9 +505,9 @@ public class fight {
 
         if(isFirstUse){
             cleanActionListener(b1, b2, b3);
-            b1.setLabel("Attacco1 (" + attack1 + ")");
-            b2.setLabel("Attacco2 (" + attack2 + ")");
-            b3.setLabel("Attacco3 (" + attack3 + ")");
+            b1.setLabel("Attacco 1 (" + attack1 + ")");
+            b2.setLabel("Attacco 2 (" + attack2 + ")");
+            b3.setLabel("Attacco 3 (" + attack3 + ")");
 
             b1.addActionListener(e -> {
 
@@ -492,9 +547,9 @@ public class fight {
             cleanActionListener(b1, b2, b3);
             // defense option ************************************
 
-            b1.setLabel("Difesa1 (" + defense1 + ")");
-            b2.setLabel("Difesa2 (" + defense2 + ")");
-            b3.setLabel("Difesa3 (" + defense3 + ")");
+            b1.setLabel("Difesa 1 (" + defense1 + ")");
+            b2.setLabel("Difesa 2 (" + defense2 + ")");
+            b3.setLabel("Difesa 3 (" + defense3 + ")");
 
             b1.addActionListener(e -> {
                 if(m.actionBlocked)
@@ -534,9 +589,9 @@ public class fight {
             cleanActionListener(b1, b2, b3);
             // healing option ************************************
 
-            b1.setLabel("Cura1 (" + healing1 + ")");
-            b2.setLabel("Cura2 (" + healing2 + ")");
-            b3.setLabel("Cura3 (" + healing3 + ")");
+            b1.setLabel("Cura 1 (" + healing1 + ")");
+            b2.setLabel("Cura 2 (" + healing2 + ")");
+            b3.setLabel("Cura 3 (" + healing3 + ")");
 
             b1.addActionListener(e -> {
                 if(m.actionBlocked)

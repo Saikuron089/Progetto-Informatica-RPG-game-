@@ -272,7 +272,7 @@ public class Map extends JPanel implements Runnable {
 
             // random scontro con il bot
 
-            if (r.nextInt(70) == 69) {
+            if (r.nextInt(100) == 69) {
                 System.out.println("Scontro con il bot!");
                 isFound = true;
             }

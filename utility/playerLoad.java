@@ -100,16 +100,19 @@ public class playerLoad {
 
             f1.close();
 
-            if(exp + newExp < 0){
-                newExp = 0;
-            }
-
             FileWriter f = new FileWriter("user.txt");
             PrintWriter fOUT = new PrintWriter(f);
-            
-            fOUT.write(nome + "-" + newExp + "-" + firstKey + "-" + secondKey);
 
-            this.exp = newExp;
+            if(exp + newExp < 0){
+                fOUT.write(nome + "-" + 0 + "-" + firstKey + "-" + secondKey);
+                this.exp = 0;
+                f.close();
+                return;
+            }
+            
+            fOUT.write(nome + "-" + (exp + newExp) + "-" + firstKey + "-" + secondKey);
+
+            this.exp = (exp + newExp);
 
             f.close();
 

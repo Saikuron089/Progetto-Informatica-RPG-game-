@@ -56,7 +56,7 @@ public class Map extends JPanel implements Runnable {
 
     // fight
 
-    int botProbability = 1000;
+    int botProbability = 600;
 
     public boolean isFight = false; // for the screen render
     public boolean isFound = false; // for the initial dialog

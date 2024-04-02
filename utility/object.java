@@ -1,7 +1,9 @@
 package utility;
 
 import java.awt.image.BufferedImage;
-
+import java.util.*;
+import java.io.*;
+import java.lang.*;
 import javax.imageio.ImageIO;
 
 public class object {
@@ -24,6 +26,9 @@ public class object {
     // bots
 
     public BufferedImage bots1;
+    public BufferedImage bots2;
+    public BufferedImage bots3;
+    public BufferedImage bots4;
 
     public object() {
 
@@ -41,6 +46,9 @@ public class object {
             key = ImageIO.read(getClass().getResourceAsStream("/assets/tiles/key.png"));
             back1 = ImageIO.read(getClass().getResourceAsStream("/assets/background/backgroundFight.png"));
             bots1 = ImageIO.read(getClass().getResourceAsStream("/assets/bots/bot1.png"));
+            bots2 = ImageIO.read(getClass().getResourceAsStream("/assets/bots/bot2.png"));
+            bots3 = ImageIO.read(getClass().getResourceAsStream("/assets/bots/bot3.png"));
+            bots4 = ImageIO.read(getClass().getResourceAsStream("/assets/bots/bot4.png"));
 
         } catch (Exception e) {
             System.out.println("Errore: " + e);

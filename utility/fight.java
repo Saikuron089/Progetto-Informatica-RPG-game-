@@ -7,6 +7,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -108,55 +111,72 @@ public class fight {
 
             int baseExp = playerPE / 3;
 
-            attack1 = baseExp / (r.nextInt(3) + 1);
-            defense1 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.3);    // più svantaggioso
-            healing1 = (int) (baseExp / (r.nextInt(3) + 1) * 1.2);                    // medio vantaggioso
+            if(playerPE <= 0){
+                attack1 = 20;
+                defense1 = 20;
+                healing1 = 20;
+                attack2 = 20;
+                defense2 = 20;
+                healing2 = 20;
+                attack3 = 20;
+                defense3 = 20;
+                healing3 = 20;
+            }else{
 
-            attack2 = baseExp / (r.nextInt(3) + 1);
-            defense2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
-            healing2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
+                attack1 = baseExp / (r.nextInt(3) + 1);
+                defense1 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.3);    // più svantaggioso
+                healing1 = (int) (baseExp / (r.nextInt(3) + 1) * 1.2);                    // medio vantaggioso
+                
+                do{
+                    attack2 = baseExp / (r.nextInt(3) + 1);
+                    defense2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
+                    healing2 = baseExp / (r.nextInt(3) + 1);                    // più vantaggioso
+                }while(attack2 != attack1 && defense2 != defense1 && healing2 != healing1);
 
-            attack3 = baseExp / (r.nextInt(3) + 1);
-            defense3 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.2);    // medio svantaggioso
-            healing3 = (int) (baseExp / (r.nextInt(3) + 1) * 1.3);                    // più svantaggioso
+                do{
+                    attack3 = baseExp / (r.nextInt(3) + 1);
+                    defense3 = (int) ((baseExp / (r.nextInt(3) + 1)) * 1.2);    // medio svantaggioso
+                    healing3 = (int) (baseExp / (r.nextInt(3) + 1) * 1.3);      // più svantaggioso
+                }while(attack3 != attack1 && defense3 != defense1 && healing3 != healing1 && attack3 != attack2 && defense3 != defense2 && healing3 != healing2);
 
-            // add or update player exp on attack, defense and healing
+                // add or update player exp on attack, defense and healing
 
-            f = new FileReader("potenziamenti_ottenuti.txt");
-            fIN = new BufferedReader(f);
-
-            line = fIN.readLine();
-
-            while (line != null) {
-
-                st = new StringTokenizer(line, "-");
-
-                st.nextToken();
-                st.nextToken();
-
-                int attack = Integer.parseInt(st.nextToken());
-                int defense = Integer.parseInt(st.nextToken());
-                int healing = Integer.parseInt(st.nextToken());
-
-                if(r.nextInt(3) == 0){
-                    attack1 += attack / 2;
-                    defense2 += defense / 2;
-                    healing3 += healing / 2;
-                } else if(r.nextInt(3) == 1){
-                    attack3 += attack / 2;
-                    defense1 += defense / 2;
-                    healing2 += healing / 2;
-                } else {
-                    attack2 += attack / 2;
-                    defense3 += defense / 2;
-                    healing1 += healing / 2;
-                }
+                f = new FileReader("potenziamenti_ottenuti.txt");
+                fIN = new BufferedReader(f);
 
                 line = fIN.readLine();
-                
-            }
 
-            f.close();
+                while (line != null) {
+
+                    st = new StringTokenizer(line, "-");
+
+                    st.nextToken();
+                    st.nextToken();
+
+                    int attack = Integer.parseInt(st.nextToken());
+                    int defense = Integer.parseInt(st.nextToken());
+                    int healing = Integer.parseInt(st.nextToken());
+
+                    if(r.nextInt(3) == 0){
+                        attack1 += attack / 2;
+                        defense2 += defense / 2;
+                        healing3 += healing / 2;
+                    } else if(r.nextInt(3) == 1){
+                        attack3 += attack / 2;
+                        defense1 += defense / 2;
+                        healing2 += healing / 2;
+                    } else {
+                        attack2 += attack / 2;
+                        defense3 += defense / 2;
+                        healing1 += healing / 2;
+                    }
+
+                    line = fIN.readLine();
+                    
+                }
+
+                f.close();
+            }
 
             // setup enemy attack, defense and healing
 
@@ -386,6 +406,9 @@ public class fight {
 
             info.setText("<html>Hai vinto! <br>Il tuo punteggio è aumentato di 10 PE.<br>Premi invio.</html>");
             info.setVisible(true);
+
+            money mo = new money();
+            mo.addMoney(10);
 
             isFinished = true;
 

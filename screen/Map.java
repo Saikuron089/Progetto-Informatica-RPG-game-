@@ -3,10 +3,12 @@ package screen;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
-import java.util.StringTokenizer;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
 
 // input
 
@@ -15,14 +17,20 @@ import inputs.keyboardInput;
 // draw
 
 import utility.draw;
+import utility.object;
 
 public class Map extends JPanel implements Runnable {
 
+    object o = new object();
     BufferedImage img;
     Thread gameThread;
     final int FPS = 60;
     public JFrame f = new JFrame("Gioco");
     Random r = new Random();
+    final int tickDialog = (int) (FPS * 1.5);
+    int countTickDialog = 0;
+
+    boolean fightDialog = false;
 
     // setup the map
 
@@ -46,17 +54,9 @@ public class Map extends JPanel implements Runnable {
     boolean isRIGHT = false;
     boolean getKey = false;
 
-    // dialog settings
-
-    boolean isDialog = false;
-    boolean isDialogBlocked = false;
-    int dialogIndex = 0;
-    String dialogText = "Ho sentito parlare di te! \nSei il nuovo eroe del villaggio?";
-
-    boolean isKeyDialog = false;
-    boolean isKeyDialogBlocked = false;
-
     // fight
+
+    int botProbability = 1000;
 
     public boolean isFight = false; // for the screen render
     public boolean isFound = false; // for the initial dialog
@@ -73,7 +73,7 @@ public class Map extends JPanel implements Runnable {
     // camera settings
 
     int camX = -360;
-    int camY = -168;
+    int camY = -268;
 
     public Map() {
 
@@ -128,6 +128,21 @@ public class Map extends JPanel implements Runnable {
 
         while (gameThread != null) {
 
+            if(d.finishedGame == 1 && k.enter){
+                System.exit(0);
+            }else if(d.finishedGame == 1 && !k.enter){
+                SPEED = 0;
+            }
+
+            // block dialog
+
+            if(d.dialogBlock && countTickDialog < tickDialog){
+                countTickDialog++;
+            }else if(d.dialogBlock && countTickDialog >= tickDialog){
+                d.dialogBlock = false;
+                countTickDialog = 0;
+            }
+
             if(actionBlocked && k.enter){
                 System.out.println("sbloccato");
                 actionBlocked = false;
@@ -136,16 +151,10 @@ public class Map extends JPanel implements Runnable {
             // normal condition
 
             if (!isFight) {
-                
-                // check if dialog is open
-
-                dialog();
-
-                // take eventually the keys
-
-                keys();
 
                 // update
+
+                dialog();
 
                 repaint();
 
@@ -175,59 +184,23 @@ public class Map extends JPanel implements Runnable {
 
     }
 
-    public void keys() {
+    public void dialog(){
 
-        if (camX < -1250 && camX > -1320 && camY < -640 && camY > -850 && d.p.exp >= 500 && !d.p.firstKey) {
-            d.p.firstKey = true;
-            d.p.getFirstKey();
+        if(d.dialogOpen && !k.enter){
+            SPEED = 0;
+        }else if(d.dialogOpen && k.enter){
+            System.out.println("Dialogo chiuso!");
+            d.dialogOpen = false;
+            d.dialogBlock = true;
+            SPEED = 4;
         }
 
     }
 
-    public void dialog() {
-
-        // dialog
-
-        if (camX < -700 && camX > -800 && camY < -180 && camY > -280 && dialogIndex == 0 && !isDialogBlocked) {
-            isDialog = true;
-            dialogIndex = 1;
-        } else if (dialogIndex == 1 && k.enter) {
-            dialogIndex++;
-            k.enter = false;
-        } else if (dialogIndex == 2 && k.enter) {
-            dialogIndex++;
-            k.enter = false;
-        } else if (dialogIndex == 3) {
-            dialogIndex = 0;
-            isDialog = false;
-            isDialogBlocked = true;
-        }
-
-        if (camX < -1200 && camX > -1300 && camY < -640 && camY > -850 && d.p.exp < 500) {
-            isKeyDialog = true;
-        }
-
-    }
 
     public void update() {
 
-        // System.out.println("CamX: " + camX + " CamY: " + camY);
-
-        if (isDialog && dialogIndex == 1) {
-            SPEED = 0;
-            System.out.println("Dialog 1");
-        } else if (isDialog && dialogIndex == 2) {
-            dialogText = "Mi hanno detto che sei forte! \nMa stai attento, il nemico è vicino!";
-            SPEED = 0;
-            System.out.println("Dialog 2");
-        } else if (isKeyDialog && !isKeyDialogBlocked) {
-            SPEED = 0;
-            if (k.enter) {
-                isKeyDialog = false;
-                isKeyDialogBlocked = true;
-            }
-            System.out.println("Dialog Key");
-        }
+        //System.out.println("CamX: " + camX + " CamY: " + camY);
 
         // controlla che non esca dai bordi
 
@@ -272,7 +245,7 @@ public class Map extends JPanel implements Runnable {
 
             // random scontro con il bot
 
-            if (r.nextInt(100) == 69) {
+            if (r.nextInt(botProbability) == 69) {
                 System.out.println("Scontro con il bot!");
                 isFound = true;
             }
@@ -306,24 +279,11 @@ public class Map extends JPanel implements Runnable {
 
         d.drawPlayer(g2, img, WIDTH / 2 - 55, HEIGHT / 2 - 55);
 
-        // draw the bots
-
-        d.drawBot(g2, img, 1224 + camX, 572 + camY);
-        if (!isDialogBlocked && isDialog) {
-            StringTokenizer st = new StringTokenizer(dialogText, "\n");
-            d.drawDialog(g2, 1250 + camX, 500 + camY, st.nextToken(), st.nextToken());
-        }
-
-        if (!isKeyDialogBlocked && isKeyDialog) {
-            d.drawHeadDialog(g2, 1850 + camX, 1000 + camY, "Non puoi accedere alla chiave,",
-                    "Se non hai raggiunto 500xp!");
-        }
-
         // draw bot for fight
 
         if (isFound) {
-            d.drawDialog(g2, WIDTH / 2 + 50, HEIGHT / 2 - 145, "Adesso ti uccido!", "");
-            d.drawBot(g2, img, WIDTH / 2, HEIGHT / 2 - 55);
+            d.drawBot(g2, o.bots1 , WIDTH / 2, HEIGHT / 2 - 55, "Non puoi scappare ora!", isFound);
+            d.dialogBlock = true;
         }
 
         if (isFound && k.enter) {
@@ -332,6 +292,8 @@ public class Map extends JPanel implements Runnable {
             repaint();
             d.f.newFight();
         }
+
+        d.drawNPC(g2, camX, camY);
 
         // manage colliding
 

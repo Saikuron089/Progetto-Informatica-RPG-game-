@@ -5,6 +5,9 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import java.util.Vector;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
 
 // da controllare se sono stati presi i personaggi (sennò c'è il loop)
 
@@ -123,21 +126,14 @@ public class RandomPlayer {
             // prendo dalla riga il nome, rarità e numero di stelle
 
             String player = v.elementAt(scelta);
-            StringTokenizer st = new StringTokenizer(player, "-");
-            String nome;
-            
-            System.out.println(player);
 
-            st.nextToken();
-            nome = st.nextToken();
-
-            fOUT.println(nome);
+            fOUT.println(player);
 
             // chiudo il file
             f1.close();
             
             // ritorna la riga del potenziamento in base al numero random
-            return "E' stato trovato il potenziamento: " + nome;
+            return "E' stato trovato il potenziamento: " + player;
 
         }catch (Exception e){
             System.out.println("Errore2: " + e);

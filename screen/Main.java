@@ -1,12 +1,12 @@
 package screen;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
+
+import utility.resetGame;
 
 import java.awt.event.ActionEvent;
 
@@ -35,8 +35,26 @@ public class Main extends JFrame{
 
         this.add(l1);
 
+        Button reset = new Button("Nuovo gioco");
+        reset.setBounds(140, 150, 200, 30);
+
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                resetGame rg = new resetGame();
+
+                f.dispose();
+                Map m = new Map();
+            }
+        });
+
+
+
+        this.add(reset);
+
         Button l2 = new Button("Negozio");
-        l2.setBounds(140, 150, 200, 30);
+        l2.setBounds(140, 200, 200, 30);
         l2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,7 +68,7 @@ public class Main extends JFrame{
         this.add(l2);
 
         Button l3 = new Button("Esci");
-        l3.setBounds(140, 200, 200, 30);
+        l3.setBounds(140, 250, 200, 30);
         l3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

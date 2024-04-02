@@ -2,11 +2,13 @@ package utility;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
+import java.lang.*;
 
 import javax.imageio.ImageIO;
 
@@ -98,12 +100,16 @@ public class playerLoad {
 
             f1.close();
 
+            if(exp + newExp < 0){
+                newExp = 0;
+            }
+
             FileWriter f = new FileWriter("user.txt");
             PrintWriter fOUT = new PrintWriter(f);
             
-            fOUT.write(nome + "-" + (exp + newExp) + "-" + firstKey + "-" + secondKey);
+            fOUT.write(nome + "-" + newExp + "-" + firstKey + "-" + secondKey);
 
-            this.exp = exp + newExp;
+            this.exp = newExp;
 
             f.close();
 
